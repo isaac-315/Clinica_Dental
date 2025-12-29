@@ -17,9 +17,11 @@ public class Login extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         setResizable(false);
-        
+
         jPanel1.setFocusable(true);
         jPanel1.requestFocusInWindow();
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
     }
 
     /**
@@ -84,6 +86,11 @@ public class Login extends javax.swing.JFrame {
 
         jButtonIniciarSesion.setFont(new java.awt.Font("Roboto SemiBold", 1, 14)); // NOI18N
         jButtonIniciarSesion.setText("ENTRAR");
+        jButtonIniciarSesion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonIniciarSesionActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -153,17 +160,23 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextFieldNombreUsuarioFocusLost
 
     private void jTextFieldNombreUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNombreUsuarioActionPerformed
-      
+
     }//GEN-LAST:event_jTextFieldNombreUsuarioActionPerformed
 
     private void jPasswordContrasenaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordContrasenaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jPasswordContrasenaActionPerformed
 
+    private void jButtonIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIniciarSesionActionPerformed
+        Principal principal = new Principal(this); // pasamos el login
+        principal.setVisible(true);
+        this.setVisible(false); // solo ocultamos
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    }//GEN-LAST:event_jButtonIniciarSesionActionPerformed
+
     /**
      * @param args the command line arguments
      */
-   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonIniciarSesion;

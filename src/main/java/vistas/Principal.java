@@ -10,13 +10,20 @@ package vistas;
  */
 public class Principal extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Principal
-     */
-    public Principal() {
+    private Login login;
+
+    public Principal(Login login) {
+        this.login = login;
         initComponents();
         setLocationRelativeTo(null);
         setResizable(false);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                login.setVisible(true);
+            }
+        });
 
     }
 
@@ -28,94 +35,18 @@ public class Principal extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
+        jButtonEmpleados = new javax.swing.JButton();
         background = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
+        jButtonUsuarios = new javax.swing.JButton();
         jButtonClientes = new javax.swing.JButton();
-        jButtonCitas = new javax.swing.JButton();
-        jButtonUsuario = new javax.swing.JButton();
         jButtonCargos = new javax.swing.JButton();
-        jButtonEmpleados = new javax.swing.JButton();
+        jButtonCitas = new javax.swing.JButton();
+        jButtonClientes4 = new javax.swing.JButton();
         jButtonFacturacion = new javax.swing.JButton();
         jButtonServicios = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        background.setBackground(new java.awt.Color(0, 153, 204));
-        background.setLayout(new java.awt.GridBagLayout());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.ipady = 19;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
-        background.add(jSeparator1, gridBagConstraints);
-
-        jButtonClientes.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        jButtonClientes.setText("Clientes");
-        jButtonClientes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonClientesActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.ipadx = 271;
-        gridBagConstraints.ipady = 26;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(20, 60, 0, 113);
-        background.add(jButtonClientes, gridBagConstraints);
-
-        jButtonCitas.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        jButtonCitas.setText("Citas");
-        jButtonCitas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCitasActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 278;
-        gridBagConstraints.ipady = 26;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(20, 60, 0, 113);
-        background.add(jButtonCitas, gridBagConstraints);
-
-        jButtonUsuario.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        jButtonUsuario.setText("Usuarios");
-        jButtonUsuario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonUsuarioActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridheight = 2;
-        gridBagConstraints.ipadx = 265;
-        gridBagConstraints.ipady = 26;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(20, 60, 0, 113);
-        background.add(jButtonUsuario, gridBagConstraints);
-
-        jButtonCargos.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        jButtonCargos.setText("Cargos");
-        jButtonCargos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCargosActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 7;
-        gridBagConstraints.ipadx = 275;
-        gridBagConstraints.ipady = 26;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(20, 60, 39, 113);
-        background.add(jButtonCargos, gridBagConstraints);
+        jLabel1 = new javax.swing.JLabel();
 
         jButtonEmpleados.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jButtonEmpleados.setText("Empleados");
@@ -124,80 +55,127 @@ public class Principal extends javax.swing.JFrame {
                 jButtonEmpleadosActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.ipadx = 251;
-        gridBagConstraints.ipady = 26;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(20, 60, 0, 113);
-        background.add(jButtonEmpleados, gridBagConstraints);
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        background.setBackground(new java.awt.Color(0, 153, 204));
+        background.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        background.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 0));
+
+        jButtonUsuarios.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        jButtonUsuarios.setText("Usuarios");
+        jButtonUsuarios.setPreferredSize(new java.awt.Dimension(76, 24));
+        jButtonUsuarios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonUsuariosActionPerformed(evt);
+            }
+        });
+        background.add(jButtonUsuarios, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 410, 190, 40));
+
+        jButtonClientes.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        jButtonClientes.setText("Clientes");
+        jButtonClientes.setPreferredSize(new java.awt.Dimension(76, 24));
+        jButtonClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonClientesActionPerformed(evt);
+            }
+        });
+        background.add(jButtonClientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 50, 190, 40));
+
+        jButtonCargos.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        jButtonCargos.setText("Cargos");
+        jButtonCargos.setPreferredSize(new java.awt.Dimension(76, 24));
+        jButtonCargos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCargosActionPerformed(evt);
+            }
+        });
+        background.add(jButtonCargos, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 110, 190, 40));
+
+        jButtonCitas.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        jButtonCitas.setText("Citas");
+        jButtonCitas.setPreferredSize(new java.awt.Dimension(76, 24));
+        jButtonCitas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCitasActionPerformed(evt);
+            }
+        });
+        background.add(jButtonCitas, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 170, 190, 40));
+
+        jButtonClientes4.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        jButtonClientes4.setText("Empleados");
+        jButtonClientes4.setPreferredSize(new java.awt.Dimension(76, 24));
+        jButtonClientes4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonClientes4ActionPerformed(evt);
+            }
+        });
+        background.add(jButtonClientes4, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 230, 190, 40));
 
         jButtonFacturacion.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        jButtonFacturacion.setText("Facturacion");
+        jButtonFacturacion.setText("Facturación");
+        jButtonFacturacion.setPreferredSize(new java.awt.Dimension(76, 24));
         jButtonFacturacion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonFacturacionActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipadx = 245;
-        gridBagConstraints.ipady = 26;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(40, 60, 0, 113);
-        background.add(jButtonFacturacion, gridBagConstraints);
+        background.add(jButtonFacturacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 290, 190, 40));
 
         jButtonServicios.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jButtonServicios.setText("Servicios");
+        jButtonServicios.setPreferredSize(new java.awt.Dimension(76, 24));
         jButtonServicios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonServiciosActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.ipadx = 265;
-        gridBagConstraints.ipady = 26;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(20, 60, 0, 113);
-        background.add(jButtonServicios, gridBagConstraints);
+        background.add(jButtonServicios, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 350, 190, 40));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\USUARO_PC\\Documents\\NetBeansProjects\\Clinica_Dental\\src\\main\\java\\images\\imagen2.jpeg")); // NOI18N
+        background.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 0, 370, 620));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(background, javax.swing.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(background, javax.swing.GroupLayout.PREFERRED_SIZE, 840, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(background, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(background, javax.swing.GroupLayout.PREFERRED_SIZE, 617, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClientesActionPerformed
+    private void jButtonUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUsuariosActionPerformed
 
-    }//GEN-LAST:event_jButtonClientesActionPerformed
-
-    private void jButtonCitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCitasActionPerformed
-
-    }//GEN-LAST:event_jButtonCitasActionPerformed
-
-    private void jButtonUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUsuarioActionPerformed
-
-    }//GEN-LAST:event_jButtonUsuarioActionPerformed
-
-    private void jButtonCargosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCargosActionPerformed
-
-    }//GEN-LAST:event_jButtonCargosActionPerformed
+    }//GEN-LAST:event_jButtonUsuariosActionPerformed
 
     private void jButtonEmpleadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEmpleadosActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonEmpleadosActionPerformed
+
+    private void jButtonClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClientesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonClientesActionPerformed
+
+    private void jButtonCargosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCargosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonCargosActionPerformed
+
+    private void jButtonCitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCitasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonCitasActionPerformed
+
+    private void jButtonClientes4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClientes4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonClientes4ActionPerformed
 
     private void jButtonFacturacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFacturacionActionPerformed
         // TODO add your handling code here:
@@ -216,10 +194,12 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton jButtonCargos;
     private javax.swing.JButton jButtonCitas;
     private javax.swing.JButton jButtonClientes;
+    private javax.swing.JButton jButtonClientes4;
     private javax.swing.JButton jButtonEmpleados;
     private javax.swing.JButton jButtonFacturacion;
     private javax.swing.JButton jButtonServicios;
-    private javax.swing.JButton jButtonUsuario;
+    private javax.swing.JButton jButtonUsuarios;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }

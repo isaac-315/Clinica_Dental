@@ -4,20 +4,16 @@
  */
 package vistas;
 
-import javax.swing.JOptionPane;
-
-
-
 /**
  *
  * @author USUARO_PC
  */
-public class Clientes extends javax.swing.JFrame {
+public class Cargos extends javax.swing.JFrame {
 
     /**
-     * Creates new form Clientes
+     * Creates new form Cargos
      */
-    public Clientes() {
+    public Cargos() {
         initComponents();
     }
 
@@ -133,36 +129,39 @@ public class Clientes extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelClientes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanelClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonBuscarRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarRestablecerActionPerformed
-        
+
     }//GEN-LAST:event_jButtonBuscarRestablecerActionPerformed
 
     private void jButtonBuscarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarClienteActionPerformed
-        
+
     }//GEN-LAST:event_jButtonBuscarClienteActionPerformed
 
     private void jButtonInsertarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertarClienteActionPerformed
-     
+
     }//GEN-LAST:event_jButtonInsertarClienteActionPerformed
 
     private void jButtonEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarClienteActionPerformed
-       
+
     }//GEN-LAST:event_jButtonEliminarClienteActionPerformed
 
     private void jButtonEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarClienteActionPerformed
-        
+
     }//GEN-LAST:event_jButtonEditarClienteActionPerformed
 
     /**
      * @param args the command line arguments
      */
-   
+    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBuscarCliente;
     private javax.swing.JButton jButtonBuscarRestablecer;
