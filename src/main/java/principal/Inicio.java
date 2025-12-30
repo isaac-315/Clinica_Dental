@@ -10,6 +10,7 @@ public class Inicio {
             Login login = new Login();
             login.setLocationRelativeTo(null); // centrar ventana
             login.setVisible(true);
+            
         });
     }
 }
