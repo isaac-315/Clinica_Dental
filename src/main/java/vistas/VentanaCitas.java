@@ -8,13 +8,47 @@ package vistas;
  *
  * @author USUARO_PC
  */
-public class Citas extends javax.swing.JFrame {
+public class VentanaCitas extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Citas
-     */
-    public Citas() {
+    private VentanaPrincipal ventanaPrincipal;
+
+    public VentanaCitas(VentanaPrincipal ventanaPrincipal) {
+        this.ventanaPrincipal = ventanaPrincipal;
         initComponents();
+        configurarTabla();
+        configurarCierre();
+        setLocationRelativeTo(null);
+        setResizable(false);
+    }
+    
+    private void configurarTabla() {
+        javax.swing.table.DefaultTableModel modelo
+                = new javax.swing.table.DefaultTableModel(
+                        null,
+                        new String[]{
+                            "ID",
+                            "Fecha de cita",
+                            "Estado"
+                        }
+                ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // tabla solo lectura
+            }
+        };
+
+        jTableCitas.setModel(modelo);
+    }
+    
+    private void configurarCierre() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                ventanaPrincipal.setVisible(true);
+            }
+        });
     }
 
     /**
@@ -28,7 +62,7 @@ public class Citas extends javax.swing.JFrame {
 
         jPanelClientes = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTableClientes = new javax.swing.JTable();
+        jTableCitas = new javax.swing.JTable();
         jButtonBuscarRestablecer = new javax.swing.JButton();
         jButtonBuscarCliente = new javax.swing.JButton();
         jButtonInsertarCliente = new javax.swing.JButton();
@@ -39,8 +73,8 @@ public class Citas extends javax.swing.JFrame {
 
         jPanelClientes.setBackground(new java.awt.Color(51, 153, 255));
 
-        jTableClientes.setFont(new java.awt.Font("Roboto", 1, 12)); // NOI18N
-        jTableClientes.setModel(new javax.swing.table.DefaultTableModel(
+        jTableCitas.setFont(new java.awt.Font("Roboto", 1, 12)); // NOI18N
+        jTableCitas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -51,8 +85,8 @@ public class Citas extends javax.swing.JFrame {
 
             }
         ));
-        jTableClientes.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane1.setViewportView(jTableClientes);
+        jTableCitas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(jTableCitas);
 
         jButtonBuscarRestablecer.setText("Restablecer");
         jButtonBuscarRestablecer.addActionListener(new java.awt.event.ActionListener() {
@@ -160,7 +194,6 @@ public class Citas extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBuscarCliente;
@@ -170,6 +203,6 @@ public class Citas extends javax.swing.JFrame {
     private javax.swing.JButton jButtonInsertarCliente;
     private javax.swing.JPanel jPanelClientes;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTableClientes;
+    private javax.swing.JTable jTableCitas;
     // End of variables declaration//GEN-END:variables
 }

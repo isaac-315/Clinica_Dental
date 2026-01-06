@@ -8,13 +8,63 @@ package vistas;
  *
  * @author USUARO_PC
  */
-public class Facturacion extends javax.swing.JFrame {
+public class VentanaFacturacion extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Facturacion
-     */
-    public Facturacion() {
+    private VentanaPrincipal ventanaPrincipal;
+
+    public VentanaFacturacion(VentanaPrincipal ventanaPrincipal) {
+        this.ventanaPrincipal = ventanaPrincipal;
         initComponents();
+        configurarTabla();
+        configurarAnchoColumnas();
+        configurarCierre();
+        setLocationRelativeTo(null);
+        setResizable(false);
+    }
+
+    private void configurarTabla() {
+        javax.swing.table.DefaultTableModel modelo
+                = new javax.swing.table.DefaultTableModel(
+                        null,
+                        new String[]{
+                            "ID",
+                            "Fecha de emision",
+                            "Subtotal",
+                            "IVA",
+                            "Total  ",
+                            "Cliente",
+                            "Usuario",}
+                ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // tabla solo lectura
+            }
+        };
+
+        jTableFacturacion.setModel(modelo);
+    }
+
+    private void configurarAnchoColumnas() {
+        jTableFacturacion.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+
+        jTableFacturacion.getColumnModel().getColumn(0).setPreferredWidth(50);   // ID
+        jTableFacturacion.getColumnModel().getColumn(1).setPreferredWidth(120);  // Cédula
+        jTableFacturacion.getColumnModel().getColumn(2).setPreferredWidth(80);  // Nombre
+        jTableFacturacion.getColumnModel().getColumn(3).setPreferredWidth(80);  // Apellido
+        jTableFacturacion.getColumnModel().getColumn(4).setPreferredWidth(80);  // Dirección
+        jTableFacturacion.getColumnModel().getColumn(5).setPreferredWidth(150);  // Tel Conv.
+        jTableFacturacion.getColumnModel().getColumn(6).setPreferredWidth(150);
+    }
+
+    private void configurarCierre() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                ventanaPrincipal.setVisible(true);
+            }
+        });
     }
 
     /**
@@ -28,7 +78,7 @@ public class Facturacion extends javax.swing.JFrame {
 
         jPanelClientes = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTableClientes = new javax.swing.JTable();
+        jTableFacturacion = new javax.swing.JTable();
         jButtonBuscarRestablecer = new javax.swing.JButton();
         jButtonBuscarCliente = new javax.swing.JButton();
         jButtonInsertarCliente = new javax.swing.JButton();
@@ -39,8 +89,8 @@ public class Facturacion extends javax.swing.JFrame {
 
         jPanelClientes.setBackground(new java.awt.Color(51, 153, 255));
 
-        jTableClientes.setFont(new java.awt.Font("Roboto", 1, 12)); // NOI18N
-        jTableClientes.setModel(new javax.swing.table.DefaultTableModel(
+        jTableFacturacion.setFont(new java.awt.Font("Roboto", 1, 12)); // NOI18N
+        jTableFacturacion.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -51,8 +101,8 @@ public class Facturacion extends javax.swing.JFrame {
 
             }
         ));
-        jTableClientes.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane1.setViewportView(jTableClientes);
+        jTableFacturacion.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(jTableFacturacion);
 
         jButtonBuscarRestablecer.setText("Restablecer");
         jButtonBuscarRestablecer.addActionListener(new java.awt.event.ActionListener() {
@@ -94,15 +144,15 @@ public class Facturacion extends javax.swing.JFrame {
         jPanelClientesLayout.setHorizontalGroup(
             jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelClientesLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 574, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 719, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 38, Short.MAX_VALUE))
+                    .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(34, 34, 34))
         );
         jPanelClientesLayout.setVerticalGroup(
             jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -158,7 +208,6 @@ public class Facturacion extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBuscarCliente;
@@ -168,6 +217,6 @@ public class Facturacion extends javax.swing.JFrame {
     private javax.swing.JButton jButtonInsertarCliente;
     private javax.swing.JPanel jPanelClientes;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTableClientes;
+    private javax.swing.JTable jTableFacturacion;
     // End of variables declaration//GEN-END:variables
 }

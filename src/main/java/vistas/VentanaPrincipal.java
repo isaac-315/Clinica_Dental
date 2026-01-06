@@ -8,11 +8,11 @@ package vistas;
  *
  * @author USUARO_PC
  */
-public class Principal extends javax.swing.JFrame {
+public class VentanaPrincipal extends javax.swing.JFrame {
 
-    private Login login;
+    private VentanaLogin login;
 
-    public Principal(Login login) {
+    public VentanaPrincipal(VentanaLogin login) {
         this.login = login;
         initComponents();
         setLocationRelativeTo(null);
@@ -36,25 +36,16 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButtonEmpleados = new javax.swing.JButton();
         background = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         jButtonUsuarios = new javax.swing.JButton();
         jButtonClientes = new javax.swing.JButton();
         jButtonCargos = new javax.swing.JButton();
         jButtonCitas = new javax.swing.JButton();
-        jButtonClientes4 = new javax.swing.JButton();
+        jButtonEmpleados = new javax.swing.JButton();
         jButtonFacturacion = new javax.swing.JButton();
         jButtonServicios = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-
-        jButtonEmpleados.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        jButtonEmpleados.setText("Empleados");
-        jButtonEmpleados.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEmpleadosActionPerformed(evt);
-            }
-        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -102,15 +93,15 @@ public class Principal extends javax.swing.JFrame {
         });
         background.add(jButtonCitas, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 170, 190, 40));
 
-        jButtonClientes4.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        jButtonClientes4.setText("Empleados");
-        jButtonClientes4.setPreferredSize(new java.awt.Dimension(76, 24));
-        jButtonClientes4.addActionListener(new java.awt.event.ActionListener() {
+        jButtonEmpleados.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        jButtonEmpleados.setText("Empleados");
+        jButtonEmpleados.setPreferredSize(new java.awt.Dimension(76, 24));
+        jButtonEmpleados.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonClientes4ActionPerformed(evt);
+                jButtonEmpleadosActionPerformed(evt);
             }
         });
-        background.add(jButtonClientes4, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 230, 190, 40));
+        background.add(jButtonEmpleados, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 230, 190, 40));
 
         jButtonFacturacion.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jButtonFacturacion.setText("Facturación");
@@ -154,35 +145,45 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUsuariosActionPerformed
-
+        VentanaUsuarios usuarios = new VentanaUsuarios(this);
+        usuarios.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_jButtonUsuariosActionPerformed
 
-    private void jButtonEmpleadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEmpleadosActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonEmpleadosActionPerformed
-
     private void jButtonClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClientesActionPerformed
-        // TODO add your handling code here:
+        VentanaClientes clientes = new VentanaClientes(this);
+        clientes.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_jButtonClientesActionPerformed
 
     private void jButtonCargosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCargosActionPerformed
-        // TODO add your handling code here:
+        VentanaCargos cargos = new VentanaCargos(this);
+        cargos.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_jButtonCargosActionPerformed
 
     private void jButtonCitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCitasActionPerformed
-        // TODO add your handling code here:
+        VentanaCitas citas = new VentanaCitas(this);
+        citas.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_jButtonCitasActionPerformed
 
-    private void jButtonClientes4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClientes4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonClientes4ActionPerformed
+    private void jButtonEmpleadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEmpleadosActionPerformed
+        VentanaEmpleados empleados = new VentanaEmpleados(this);
+        empleados.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_jButtonEmpleadosActionPerformed
 
     private void jButtonFacturacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFacturacionActionPerformed
-        // TODO add your handling code here:
+        VentanaFacturacion facturacion = new VentanaFacturacion(this);
+        facturacion.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_jButtonFacturacionActionPerformed
 
     private void jButtonServiciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonServiciosActionPerformed
-        // TODO add your handling code here:
+        VentanaServicios servicios = new VentanaServicios(this);
+        servicios.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_jButtonServiciosActionPerformed
 
     /**
@@ -194,7 +195,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton jButtonCargos;
     private javax.swing.JButton jButtonCitas;
     private javax.swing.JButton jButtonClientes;
-    private javax.swing.JButton jButtonClientes4;
     private javax.swing.JButton jButtonEmpleados;
     private javax.swing.JButton jButtonFacturacion;
     private javax.swing.JButton jButtonServicios;
