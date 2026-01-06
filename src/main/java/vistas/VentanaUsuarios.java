@@ -8,13 +8,48 @@ package vistas;
  *
  * @author USUARO_PC
  */
-public class Usuarios extends javax.swing.JFrame {
+public class VentanaUsuarios extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Usuarios
-     */
-    public Usuarios() {
+    private VentanaPrincipal ventanaPrincipal;
+
+    public VentanaUsuarios(VentanaPrincipal ventanaPrincipal) {
+        this.ventanaPrincipal = ventanaPrincipal;
         initComponents();
+        configurarTabla();
+        //configurarAnchoColumnas();
+        configurarCierre();
+        setLocationRelativeTo(null);
+        setResizable(false);
+    }
+
+    private void configurarTabla() {
+        javax.swing.table.DefaultTableModel modelo
+                = new javax.swing.table.DefaultTableModel(
+                        null,
+                        new String[]{
+                            "ID",
+                            "Usuario",
+                            "Contraseña",
+                            "Tipo"}
+                ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // tabla solo lectura
+            }
+        };
+
+        jTableUsuarios.setModel(modelo);
+    }
+    
+     private void configurarCierre() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                ventanaPrincipal.setVisible(true);
+            }
+        });
     }
 
     /**
@@ -28,7 +63,7 @@ public class Usuarios extends javax.swing.JFrame {
 
         jPanelClientes3 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTableClientes3 = new javax.swing.JTable();
+        jTableUsuarios = new javax.swing.JTable();
         jButtonBuscarRestablecer3 = new javax.swing.JButton();
         jButtonBuscarCliente3 = new javax.swing.JButton();
         jButtonInsertarCliente3 = new javax.swing.JButton();
@@ -39,8 +74,8 @@ public class Usuarios extends javax.swing.JFrame {
 
         jPanelClientes3.setBackground(new java.awt.Color(51, 153, 255));
 
-        jTableClientes3.setFont(new java.awt.Font("Roboto", 1, 12)); // NOI18N
-        jTableClientes3.setModel(new javax.swing.table.DefaultTableModel(
+        jTableUsuarios.setFont(new java.awt.Font("Roboto", 1, 12)); // NOI18N
+        jTableUsuarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -51,8 +86,8 @@ public class Usuarios extends javax.swing.JFrame {
 
             }
         ));
-        jTableClientes3.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane4.setViewportView(jTableClientes3);
+        jTableUsuarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane4.setViewportView(jTableUsuarios);
 
         jButtonBuscarRestablecer3.setText("Restablecer");
         jButtonBuscarRestablecer3.addActionListener(new java.awt.event.ActionListener() {
@@ -158,40 +193,15 @@ public class Usuarios extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonBuscarCliente;
-    private javax.swing.JButton jButtonBuscarCliente1;
-    private javax.swing.JButton jButtonBuscarCliente2;
     private javax.swing.JButton jButtonBuscarCliente3;
-    private javax.swing.JButton jButtonBuscarRestablecer;
-    private javax.swing.JButton jButtonBuscarRestablecer1;
-    private javax.swing.JButton jButtonBuscarRestablecer2;
     private javax.swing.JButton jButtonBuscarRestablecer3;
-    private javax.swing.JButton jButtonEditarCliente;
-    private javax.swing.JButton jButtonEditarCliente1;
-    private javax.swing.JButton jButtonEditarCliente2;
     private javax.swing.JButton jButtonEditarCliente3;
-    private javax.swing.JButton jButtonEliminarCliente;
-    private javax.swing.JButton jButtonEliminarCliente1;
-    private javax.swing.JButton jButtonEliminarCliente2;
     private javax.swing.JButton jButtonEliminarCliente3;
-    private javax.swing.JButton jButtonInsertarCliente;
-    private javax.swing.JButton jButtonInsertarCliente1;
-    private javax.swing.JButton jButtonInsertarCliente2;
     private javax.swing.JButton jButtonInsertarCliente3;
-    private javax.swing.JPanel jPanelClientes;
-    private javax.swing.JPanel jPanelClientes1;
-    private javax.swing.JPanel jPanelClientes2;
     private javax.swing.JPanel jPanelClientes3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTable jTableClientes;
-    private javax.swing.JTable jTableClientes1;
-    private javax.swing.JTable jTableClientes2;
-    private javax.swing.JTable jTableClientes3;
+    private javax.swing.JTable jTableUsuarios;
     // End of variables declaration//GEN-END:variables
 }

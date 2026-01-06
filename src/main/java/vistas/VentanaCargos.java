@@ -8,13 +8,47 @@ package vistas;
  *
  * @author USUARO_PC
  */
-public class Cargos extends javax.swing.JFrame {
+public class VentanaCargos extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Cargos
-     */
-    public Cargos() {
+   private VentanaPrincipal ventanaPrincipal;
+
+    public VentanaCargos(VentanaPrincipal ventanaPrincipal) {
+        this.ventanaPrincipal = ventanaPrincipal;
         initComponents();
+        configurarTabla();
+        configurarCierre();
+        setLocationRelativeTo(null);
+        setResizable(false);
+    }
+    
+     private void configurarTabla() {
+        javax.swing.table.DefaultTableModel modelo
+                = new javax.swing.table.DefaultTableModel(
+                        null,
+                        new String[]{
+                            "ID",
+                            "Nombre"
+                        }
+                ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // tabla solo lectura
+            }
+        };
+
+        jTableCargos.setModel(modelo);
+    }
+
+
+    private void configurarCierre() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                ventanaPrincipal.setVisible(true);
+            }
+        });
     }
 
     /**
@@ -28,7 +62,7 @@ public class Cargos extends javax.swing.JFrame {
 
         jPanelClientes = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTableClientes = new javax.swing.JTable();
+        jTableCargos = new javax.swing.JTable();
         jButtonBuscarRestablecer = new javax.swing.JButton();
         jButtonBuscarCliente = new javax.swing.JButton();
         jButtonInsertarCliente = new javax.swing.JButton();
@@ -39,8 +73,8 @@ public class Cargos extends javax.swing.JFrame {
 
         jPanelClientes.setBackground(new java.awt.Color(51, 153, 255));
 
-        jTableClientes.setFont(new java.awt.Font("Roboto", 1, 12)); // NOI18N
-        jTableClientes.setModel(new javax.swing.table.DefaultTableModel(
+        jTableCargos.setFont(new java.awt.Font("Roboto", 1, 12)); // NOI18N
+        jTableCargos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -51,8 +85,8 @@ public class Cargos extends javax.swing.JFrame {
 
             }
         ));
-        jTableClientes.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane1.setViewportView(jTableClientes);
+        jTableCargos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(jTableCargos);
 
         jButtonBuscarRestablecer.setText("Restablecer");
         jButtonBuscarRestablecer.addActionListener(new java.awt.event.ActionListener() {
@@ -94,19 +128,18 @@ public class Cargos extends javax.swing.JFrame {
         jPanelClientesLayout.setHorizontalGroup(
             jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelClientesLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 574, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 505, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
                 .addGroup(jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 38, Short.MAX_VALUE))
+                    .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 88, Short.MAX_VALUE))
         );
         jPanelClientesLayout.setVerticalGroup(
             jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
             .addGroup(jPanelClientesLayout.createSequentialGroup()
                 .addGap(35, 35, 35)
                 .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -119,6 +152,9 @@ public class Cargos extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanelClientesLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -129,9 +165,7 @@ public class Cargos extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanelClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanelClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -170,6 +204,6 @@ public class Cargos extends javax.swing.JFrame {
     private javax.swing.JButton jButtonInsertarCliente;
     private javax.swing.JPanel jPanelClientes;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTableClientes;
+    private javax.swing.JTable jTableCargos;
     // End of variables declaration//GEN-END:variables
 }

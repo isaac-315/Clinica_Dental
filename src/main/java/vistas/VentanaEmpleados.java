@@ -4,21 +4,74 @@
  */
 package vistas;
 
-import javax.swing.JOptionPane;
-
-
-
 /**
  *
  * @author USUARO_PC
  */
-public class Clientes extends javax.swing.JFrame {
+public class VentanaEmpleados extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Clientes
-     */
-    public Clientes() {
+    private VentanaPrincipal ventanaPrincipal;
+
+    public VentanaEmpleados(VentanaPrincipal ventanaPrincipal) {
+        this.ventanaPrincipal = ventanaPrincipal;
         initComponents();
+        configurarTabla();
+        configurarAnchoColumnas();
+        configurarCierre();
+        setLocationRelativeTo(null);
+        setResizable(false);
+    }
+
+    private void configurarTabla() {
+        javax.swing.table.DefaultTableModel modelo
+                = new javax.swing.table.DefaultTableModel(
+                        null,
+                        new String[]{
+                            "ID",
+                            "Cedula",
+                            "Nombres",
+                            "Apellidos",
+                            "Dirección",
+                            "Teléfono Convencional",
+                            "Teléfono Celular",
+                            "Correo electrónico",
+                            "Cargo",
+                            "ID de usuario"
+                        }
+                ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // tabla solo lectura
+            }
+        };
+
+        jTableEmpleados.setModel(modelo);
+    }
+    
+    private void configurarAnchoColumnas() {
+        jTableEmpleados.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+
+        jTableEmpleados.getColumnModel().getColumn(0).setPreferredWidth(50);   // ID
+        jTableEmpleados.getColumnModel().getColumn(1).setPreferredWidth(100);  // Cédula
+        jTableEmpleados.getColumnModel().getColumn(2).setPreferredWidth(120);  // Nombre
+        jTableEmpleados.getColumnModel().getColumn(3).setPreferredWidth(120);  // Apellido
+        jTableEmpleados.getColumnModel().getColumn(4).setPreferredWidth(200);  // Dirección
+        jTableEmpleados.getColumnModel().getColumn(5).setPreferredWidth(150);  // Tel Conv.
+        jTableEmpleados.getColumnModel().getColumn(6).setPreferredWidth(150);  // Celular
+        jTableEmpleados.getColumnModel().getColumn(7).setPreferredWidth(150);  // Correo
+        jTableEmpleados.getColumnModel().getColumn(8).setPreferredWidth(80);   // Estado
+        jTableEmpleados.getColumnModel().getColumn(9).setPreferredWidth(80); 
+    }
+
+    private void configurarCierre() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                ventanaPrincipal.setVisible(true);
+            }
+        });
     }
 
     /**
@@ -32,7 +85,7 @@ public class Clientes extends javax.swing.JFrame {
 
         jPanelClientes = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTableClientes = new javax.swing.JTable();
+        jTableEmpleados = new javax.swing.JTable();
         jButtonBuscarRestablecer = new javax.swing.JButton();
         jButtonBuscarCliente = new javax.swing.JButton();
         jButtonInsertarCliente = new javax.swing.JButton();
@@ -43,8 +96,8 @@ public class Clientes extends javax.swing.JFrame {
 
         jPanelClientes.setBackground(new java.awt.Color(51, 153, 255));
 
-        jTableClientes.setFont(new java.awt.Font("Roboto", 1, 12)); // NOI18N
-        jTableClientes.setModel(new javax.swing.table.DefaultTableModel(
+        jTableEmpleados.setFont(new java.awt.Font("Roboto", 1, 12)); // NOI18N
+        jTableEmpleados.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -55,8 +108,8 @@ public class Clientes extends javax.swing.JFrame {
 
             }
         ));
-        jTableClientes.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane1.setViewportView(jTableClientes);
+        jTableEmpleados.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(jTableEmpleados);
 
         jButtonBuscarRestablecer.setText("Restablecer");
         jButtonBuscarRestablecer.addActionListener(new java.awt.event.ActionListener() {
@@ -98,29 +151,29 @@ public class Clientes extends javax.swing.JFrame {
         jPanelClientesLayout.setHorizontalGroup(
             jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelClientesLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 574, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 885, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 38, Short.MAX_VALUE))
+                    .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(17, 17, 17))
         );
         jPanelClientesLayout.setVerticalGroup(
             jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
             .addGroup(jPanelClientesLayout.createSequentialGroup()
-                .addGap(35, 35, 35)
+                .addGap(44, 44, 44)
                 .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonInsertarCliente)
-                .addGap(29, 29, 29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -140,29 +193,29 @@ public class Clientes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonBuscarRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarRestablecerActionPerformed
-        
+
     }//GEN-LAST:event_jButtonBuscarRestablecerActionPerformed
 
     private void jButtonBuscarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarClienteActionPerformed
-        
+
     }//GEN-LAST:event_jButtonBuscarClienteActionPerformed
 
     private void jButtonInsertarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertarClienteActionPerformed
-     
+
     }//GEN-LAST:event_jButtonInsertarClienteActionPerformed
 
     private void jButtonEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarClienteActionPerformed
-       
+
     }//GEN-LAST:event_jButtonEliminarClienteActionPerformed
 
     private void jButtonEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarClienteActionPerformed
-        
+
     }//GEN-LAST:event_jButtonEditarClienteActionPerformed
 
     /**
      * @param args the command line arguments
      */
-   
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBuscarCliente;
     private javax.swing.JButton jButtonBuscarRestablecer;
@@ -171,6 +224,6 @@ public class Clientes extends javax.swing.JFrame {
     private javax.swing.JButton jButtonInsertarCliente;
     private javax.swing.JPanel jPanelClientes;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTableClientes;
+    private javax.swing.JTable jTableEmpleados;
     // End of variables declaration//GEN-END:variables
 }

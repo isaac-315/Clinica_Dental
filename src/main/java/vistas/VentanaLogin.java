@@ -8,12 +8,12 @@ package vistas;
  *
  * @author USUARO_PC
  */
-public class Login extends javax.swing.JFrame {
+public class VentanaLogin extends javax.swing.JFrame {
 
     /**
      * Creates new form Login
      */
-    public Login() {
+    public VentanaLogin() {
         initComponents();
         setLocationRelativeTo(null);
         setResizable(false);
@@ -168,7 +168,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jPasswordContrasenaActionPerformed
 
     private void jButtonIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIniciarSesionActionPerformed
-        Principal principal = new Principal(this); // pasamos el login
+        VentanaPrincipal principal = new VentanaPrincipal(this); // pasamos el login
         principal.setVisible(true);
         this.setVisible(false); // solo ocultamos
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
