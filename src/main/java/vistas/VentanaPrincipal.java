@@ -40,7 +40,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jButtonUsuarios = new javax.swing.JButton();
         jButtonClientes = new javax.swing.JButton();
-        jButtonCargos = new javax.swing.JButton();
         jButtonCitas = new javax.swing.JButton();
         jButtonEmpleados = new javax.swing.JButton();
         jButtonFacturacion = new javax.swing.JButton();
@@ -61,7 +60,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButtonUsuariosActionPerformed(evt);
             }
         });
-        background.add(jButtonUsuarios, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 410, 190, 40));
+        background.add(jButtonUsuarios, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 130, 190, 40));
 
         jButtonClientes.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jButtonClientes.setText("Clientes");
@@ -71,17 +70,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButtonClientesActionPerformed(evt);
             }
         });
-        background.add(jButtonClientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 50, 190, 40));
-
-        jButtonCargos.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        jButtonCargos.setText("Cargos");
-        jButtonCargos.setPreferredSize(new java.awt.Dimension(76, 24));
-        jButtonCargos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCargosActionPerformed(evt);
-            }
-        });
-        background.add(jButtonCargos, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 110, 190, 40));
+        background.add(jButtonClientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 70, 190, 40));
 
         jButtonCitas.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jButtonCitas.setText("Citas");
@@ -91,7 +80,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButtonCitasActionPerformed(evt);
             }
         });
-        background.add(jButtonCitas, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 170, 190, 40));
+        background.add(jButtonCitas, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 190, 190, 40));
 
         jButtonEmpleados.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jButtonEmpleados.setText("Empleados");
@@ -101,7 +90,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButtonEmpleadosActionPerformed(evt);
             }
         });
-        background.add(jButtonEmpleados, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 230, 190, 40));
+        background.add(jButtonEmpleados, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 250, 190, 40));
 
         jButtonFacturacion.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jButtonFacturacion.setText("Facturación");
@@ -111,7 +100,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButtonFacturacionActionPerformed(evt);
             }
         });
-        background.add(jButtonFacturacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 290, 190, 40));
+        background.add(jButtonFacturacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 310, 190, 40));
 
         jButtonServicios.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jButtonServicios.setText("Servicios");
@@ -121,7 +110,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButtonServiciosActionPerformed(evt);
             }
         });
-        background.add(jButtonServicios, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 350, 190, 40));
+        background.add(jButtonServicios, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 370, 190, 40));
 
         jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\USUARO_PC\\Documents\\NetBeansProjects\\Clinica_Dental\\src\\main\\java\\images\\imagen2.jpeg")); // NOI18N
         background.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 0, 370, 620));
@@ -136,9 +125,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(background, javax.swing.GroupLayout.PREFERRED_SIZE, 617, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(background, javax.swing.GroupLayout.PREFERRED_SIZE, 526, Short.MAX_VALUE)
         );
 
         pack();
@@ -155,12 +142,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         clientes.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jButtonClientesActionPerformed
-
-    private void jButtonCargosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCargosActionPerformed
-        VentanaCargos cargos = new VentanaCargos(this);
-        cargos.setVisible(true);
-        this.setVisible(false);
-    }//GEN-LAST:event_jButtonCargosActionPerformed
 
     private void jButtonCitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCitasActionPerformed
         VentanaCitas citas = new VentanaCitas(this);
@@ -192,7 +173,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel background;
-    private javax.swing.JButton jButtonCargos;
     private javax.swing.JButton jButtonCitas;
     private javax.swing.JButton jButtonClientes;
     private javax.swing.JButton jButtonEmpleados;

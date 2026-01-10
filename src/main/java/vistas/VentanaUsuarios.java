@@ -4,6 +4,8 @@
  */
 package vistas;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author USUARO_PC
@@ -23,15 +25,19 @@ public class VentanaUsuarios extends javax.swing.JFrame {
     }
 
     private void configurarTabla() {
-        javax.swing.table.DefaultTableModel modelo
-                = new javax.swing.table.DefaultTableModel(
-                        null,
-                        new String[]{
-                            "ID",
-                            "Usuario",
-                            "Contraseña",
-                            "Tipo"}
-                ) {
+        // Datos: ID, Usuario, Nombre completo del empleado
+        Object[][] datosUsuarios = {
+            {1, "ana_lopez", "Ana López"},
+            {2, "carlos_ruiz", "Carlos Ruiz"},
+            {3, "maria_gomez", "María Gómez"},
+            {4, "javier_torres", "Javier Torres"}
+        };
+
+        String[] columnas = {"ID", "Usuario", "Empleado"};
+
+        javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
+                datosUsuarios, columnas
+        ) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // tabla solo lectura
@@ -40,8 +46,8 @@ public class VentanaUsuarios extends javax.swing.JFrame {
 
         jTableUsuarios.setModel(modelo);
     }
-    
-     private void configurarCierre() {
+
+    private void configurarCierre() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         this.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -64,11 +70,11 @@ public class VentanaUsuarios extends javax.swing.JFrame {
         jPanelClientes3 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTableUsuarios = new javax.swing.JTable();
-        jButtonBuscarRestablecer3 = new javax.swing.JButton();
-        jButtonBuscarCliente3 = new javax.swing.JButton();
-        jButtonInsertarCliente3 = new javax.swing.JButton();
-        jButtonEliminarCliente3 = new javax.swing.JButton();
-        jButtonEditarCliente3 = new javax.swing.JButton();
+        jButtonRestablecer = new javax.swing.JButton();
+        jButtonBuscarUsuario = new javax.swing.JButton();
+        jButtonCrearUsuario = new javax.swing.JButton();
+        jButtonEliminarUsuario = new javax.swing.JButton();
+        jButtonEditarEditarUsuario = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -89,38 +95,38 @@ public class VentanaUsuarios extends javax.swing.JFrame {
         jTableUsuarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane4.setViewportView(jTableUsuarios);
 
-        jButtonBuscarRestablecer3.setText("Restablecer");
-        jButtonBuscarRestablecer3.addActionListener(new java.awt.event.ActionListener() {
+        jButtonRestablecer.setText("Restablecer");
+        jButtonRestablecer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonBuscarRestablecer3ActionPerformed(evt);
+                jButtonRestablecerActionPerformed(evt);
             }
         });
 
-        jButtonBuscarCliente3.setText("Buscar");
-        jButtonBuscarCliente3.addActionListener(new java.awt.event.ActionListener() {
+        jButtonBuscarUsuario.setText("Buscar");
+        jButtonBuscarUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonBuscarCliente3ActionPerformed(evt);
+                jButtonBuscarUsuarioActionPerformed(evt);
             }
         });
 
-        jButtonInsertarCliente3.setText("Insertar");
-        jButtonInsertarCliente3.addActionListener(new java.awt.event.ActionListener() {
+        jButtonCrearUsuario.setText("Crear Usuario");
+        jButtonCrearUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonInsertarCliente3ActionPerformed(evt);
+                jButtonCrearUsuarioActionPerformed(evt);
             }
         });
 
-        jButtonEliminarCliente3.setText("Eliminar");
-        jButtonEliminarCliente3.addActionListener(new java.awt.event.ActionListener() {
+        jButtonEliminarUsuario.setText("Eliminar");
+        jButtonEliminarUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEliminarCliente3ActionPerformed(evt);
+                jButtonEliminarUsuarioActionPerformed(evt);
             }
         });
 
-        jButtonEditarCliente3.setText("Editar");
-        jButtonEditarCliente3.addActionListener(new java.awt.event.ActionListener() {
+        jButtonEditarEditarUsuario.setText("Editar");
+        jButtonEditarEditarUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEditarCliente3ActionPerformed(evt);
+                jButtonEditarEditarUsuarioActionPerformed(evt);
             }
         });
 
@@ -132,11 +138,11 @@ public class VentanaUsuarios extends javax.swing.JFrame {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 574, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelClientes3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonBuscarRestablecer3, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonBuscarCliente3, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonInsertarCliente3, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEliminarCliente3, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEditarCliente3, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButtonRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBuscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonCrearUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonEliminarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonEditarEditarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 38, Short.MAX_VALUE))
         );
         jPanelClientes3Layout.setVerticalGroup(
@@ -144,15 +150,15 @@ public class VentanaUsuarios extends javax.swing.JFrame {
             .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
             .addGroup(jPanelClientes3Layout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addComponent(jButtonBuscarRestablecer3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonBuscarCliente3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonBuscarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonInsertarCliente3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonCrearUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonEliminarCliente3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonEliminarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonEditarCliente3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonEditarEditarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -170,36 +176,48 @@ public class VentanaUsuarios extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonBuscarRestablecer3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarRestablecer3ActionPerformed
+    private void jButtonRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRestablecerActionPerformed
 
-    }//GEN-LAST:event_jButtonBuscarRestablecer3ActionPerformed
+    }//GEN-LAST:event_jButtonRestablecerActionPerformed
 
-    private void jButtonBuscarCliente3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarCliente3ActionPerformed
+    private void jButtonBuscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarUsuarioActionPerformed
+        String criterio = javax.swing.JOptionPane.showInputDialog(
+                this,
+                "Ingrese el nombre de usuario o nombre del empleado:",
+                "Buscar Usuario",
+                javax.swing.JOptionPane.QUESTION_MESSAGE
+        );
+    }//GEN-LAST:event_jButtonBuscarUsuarioActionPerformed
 
-    }//GEN-LAST:event_jButtonBuscarCliente3ActionPerformed
+    private void jButtonCrearUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCrearUsuarioActionPerformed
+        FormularioCreacionUsuarios formulario = new FormularioCreacionUsuarios();
+        formulario.setVisible(true);
+    }//GEN-LAST:event_jButtonCrearUsuarioActionPerformed
 
-    private void jButtonInsertarCliente3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertarCliente3ActionPerformed
+    private void jButtonEliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarUsuarioActionPerformed
+       String criterio = JOptionPane.showInputDialog(
+        this,
+        "Ingrese el nombre de usuario o ID del usuario a eliminar:",
+        "Eliminar Usuario",
+        JOptionPane.QUESTION_MESSAGE
+    );
+    }//GEN-LAST:event_jButtonEliminarUsuarioActionPerformed
 
-    }//GEN-LAST:event_jButtonInsertarCliente3ActionPerformed
-
-    private void jButtonEliminarCliente3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarCliente3ActionPerformed
-
-    }//GEN-LAST:event_jButtonEliminarCliente3ActionPerformed
-
-    private void jButtonEditarCliente3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarCliente3ActionPerformed
-
-    }//GEN-LAST:event_jButtonEditarCliente3ActionPerformed
+    private void jButtonEditarEditarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarEditarUsuarioActionPerformed
+        FormularioRegistroCliente formulario = new FormularioRegistroCliente();
+        formulario.setVisible(true);
+    }//GEN-LAST:event_jButtonEditarEditarUsuarioActionPerformed
 
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonBuscarCliente3;
-    private javax.swing.JButton jButtonBuscarRestablecer3;
-    private javax.swing.JButton jButtonEditarCliente3;
-    private javax.swing.JButton jButtonEliminarCliente3;
-    private javax.swing.JButton jButtonInsertarCliente3;
+    private javax.swing.JButton jButtonBuscarUsuario;
+    private javax.swing.JButton jButtonCrearUsuario;
+    private javax.swing.JButton jButtonEditarEditarUsuario;
+    private javax.swing.JButton jButtonEliminarUsuario;
+    private javax.swing.JButton jButtonRestablecer;
     private javax.swing.JPanel jPanelClientes3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTableUsuarios;

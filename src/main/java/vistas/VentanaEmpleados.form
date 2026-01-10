@@ -47,11 +47,11 @@
                   <Component id="jScrollPane1" pref="885" max="32767" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jButtonEditarCliente" min="-2" pref="165" max="-2" attributes="0"/>
-                      <Component id="jButtonEliminarCliente" min="-2" pref="165" max="-2" attributes="0"/>
-                      <Component id="jButtonInsertarCliente" min="-2" pref="165" max="-2" attributes="0"/>
-                      <Component id="jButtonBuscarCliente" min="-2" pref="165" max="-2" attributes="0"/>
-                      <Component id="jButtonBuscarRestablecer" min="-2" pref="165" max="-2" attributes="0"/>
+                      <Component id="jButtonEditarEmpleado" min="-2" pref="165" max="-2" attributes="0"/>
+                      <Component id="jButtonEliminarEmpleado" min="-2" pref="165" max="-2" attributes="0"/>
+                      <Component id="jButtonInsertarEmpleado" min="-2" pref="165" max="-2" attributes="0"/>
+                      <Component id="jButtonBuscarEmpleado" min="-2" pref="165" max="-2" attributes="0"/>
+                      <Component id="jButtonRestablecer" min="-2" pref="165" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
               </Group>
@@ -62,15 +62,15 @@
               <Component id="jScrollPane1" alignment="0" pref="425" max="32767" attributes="0"/>
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
-                  <Component id="jButtonBuscarRestablecer" min="-2" pref="34" max="-2" attributes="0"/>
+                  <Component id="jButtonRestablecer" min="-2" pref="34" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jButtonBuscarCliente" min="-2" pref="34" max="-2" attributes="0"/>
+                  <Component id="jButtonBuscarEmpleado" min="-2" pref="34" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jButtonInsertarCliente" min="-2" pref="34" max="-2" attributes="0"/>
+                  <Component id="jButtonInsertarEmpleado" min="-2" pref="34" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jButtonEliminarCliente" min="-2" pref="34" max="-2" attributes="0"/>
+                  <Component id="jButtonEliminarEmpleado" min="-2" pref="34" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jButtonEditarCliente" min="-2" pref="34" max="-2" attributes="0"/>
+                  <Component id="jButtonEditarEmpleado" min="-2" pref="34" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -102,44 +102,44 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="jButtonBuscarRestablecer">
+        <Component class="javax.swing.JButton" name="jButtonRestablecer">
           <Properties>
             <Property name="text" type="java.lang.String" value="Restablecer"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonBuscarRestablecerActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonRestablecerActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonBuscarCliente">
+        <Component class="javax.swing.JButton" name="jButtonBuscarEmpleado">
           <Properties>
             <Property name="text" type="java.lang.String" value="Buscar"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonBuscarClienteActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonBuscarEmpleadoActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonInsertarCliente">
+        <Component class="javax.swing.JButton" name="jButtonInsertarEmpleado">
           <Properties>
             <Property name="text" type="java.lang.String" value="Insertar"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonInsertarClienteActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonInsertarEmpleadoActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonEliminarCliente">
+        <Component class="javax.swing.JButton" name="jButtonEliminarEmpleado">
           <Properties>
             <Property name="text" type="java.lang.String" value="Eliminar"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonEliminarClienteActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonEliminarEmpleadoActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonEditarCliente">
+        <Component class="javax.swing.JButton" name="jButtonEditarEmpleado">
           <Properties>
             <Property name="text" type="java.lang.String" value="Editar"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonEditarClienteActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonEditarEmpleadoActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

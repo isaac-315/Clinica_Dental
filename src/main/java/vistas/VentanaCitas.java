@@ -20,26 +20,37 @@ public class VentanaCitas extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
     }
-    
+
     private void configurarTabla() {
-        javax.swing.table.DefaultTableModel modelo
-                = new javax.swing.table.DefaultTableModel(
-                        null,
-                        new String[]{
-                            "ID",
-                            "Fecha de cita",
-                            "Estado"
-                        }
-                ) {
+        // Datos de ejemplo de citas (ficticias)
+        Object[][] datosCitas = {
+            {1, "2026-01-15", "Confirmada", "Juan Pérez", "Dra. Ana López"},
+            {2, "2026-01-16", "Pendiente", "María Gómez", "Dr. Carlos Ruiz"},
+            {3, "2026-01-17", "Cancelada", "Luis Martínez", "Dra. Ana López"},
+            {4, "2026-01-18", "Confirmada", "Sofía Ramírez", "Dr. Javier Torres"}
+        };
+
+        String[] columnas = {
+            "ID",
+            "Fecha de cita",
+            "Estado",
+            "Cliente",
+            "Empleado asignado"
+        };
+
+        javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
+                datosCitas,
+                columnas
+        ) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // tabla solo lectura
+                return false; // solo lectura
             }
         };
 
         jTableCitas.setModel(modelo);
     }
-    
+
     private void configurarCierre() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -63,11 +74,11 @@ public class VentanaCitas extends javax.swing.JFrame {
         jPanelClientes = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableCitas = new javax.swing.JTable();
-        jButtonBuscarRestablecer = new javax.swing.JButton();
-        jButtonBuscarCliente = new javax.swing.JButton();
-        jButtonInsertarCliente = new javax.swing.JButton();
-        jButtonEliminarCliente = new javax.swing.JButton();
-        jButtonEditarCliente = new javax.swing.JButton();
+        jButtonRestablecer = new javax.swing.JButton();
+        jButtonBuscarCita = new javax.swing.JButton();
+        jButtonAgendarCita = new javax.swing.JButton();
+        jButtonEliminarCita = new javax.swing.JButton();
+        jButtonEditarCita = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -88,38 +99,38 @@ public class VentanaCitas extends javax.swing.JFrame {
         jTableCitas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(jTableCitas);
 
-        jButtonBuscarRestablecer.setText("Restablecer");
-        jButtonBuscarRestablecer.addActionListener(new java.awt.event.ActionListener() {
+        jButtonRestablecer.setText("Restablecer");
+        jButtonRestablecer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonBuscarRestablecerActionPerformed(evt);
+                jButtonRestablecerActionPerformed(evt);
             }
         });
 
-        jButtonBuscarCliente.setText("Buscar");
-        jButtonBuscarCliente.addActionListener(new java.awt.event.ActionListener() {
+        jButtonBuscarCita.setText("Buscar");
+        jButtonBuscarCita.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonBuscarClienteActionPerformed(evt);
+                jButtonBuscarCitaActionPerformed(evt);
             }
         });
 
-        jButtonInsertarCliente.setText("Insertar");
-        jButtonInsertarCliente.addActionListener(new java.awt.event.ActionListener() {
+        jButtonAgendarCita.setText("Agendar cita");
+        jButtonAgendarCita.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonInsertarClienteActionPerformed(evt);
+                jButtonAgendarCitaActionPerformed(evt);
             }
         });
 
-        jButtonEliminarCliente.setText("Eliminar");
-        jButtonEliminarCliente.addActionListener(new java.awt.event.ActionListener() {
+        jButtonEliminarCita.setText("Cancelar Cita");
+        jButtonEliminarCita.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEliminarClienteActionPerformed(evt);
+                jButtonEliminarCitaActionPerformed(evt);
             }
         });
 
-        jButtonEditarCliente.setText("Editar");
-        jButtonEditarCliente.addActionListener(new java.awt.event.ActionListener() {
+        jButtonEditarCita.setText("Editar");
+        jButtonEditarCita.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEditarClienteActionPerformed(evt);
+                jButtonEditarCitaActionPerformed(evt);
             }
         });
 
@@ -131,11 +142,11 @@ public class VentanaCitas extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 574, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButtonRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBuscarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonAgendarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonEliminarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonEditarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 38, Short.MAX_VALUE))
         );
         jPanelClientesLayout.setVerticalGroup(
@@ -143,15 +154,15 @@ public class VentanaCitas extends javax.swing.JFrame {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
             .addGroup(jPanelClientesLayout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonBuscarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonAgendarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonEliminarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonEditarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -171,36 +182,43 @@ public class VentanaCitas extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonBuscarRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarRestablecerActionPerformed
+    private void jButtonRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRestablecerActionPerformed
+        configurarTabla();
+    }//GEN-LAST:event_jButtonRestablecerActionPerformed
 
-    }//GEN-LAST:event_jButtonBuscarRestablecerActionPerformed
+    private void jButtonBuscarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarCitaActionPerformed
+        String criterio = javax.swing.JOptionPane.showInputDialog(
+                this,
+                "Ingrese el nombre, apellido o ID del cliente a buscar:",
+                "Buscar Cliente",
+                javax.swing.JOptionPane.QUESTION_MESSAGE
+        );
+    }//GEN-LAST:event_jButtonBuscarCitaActionPerformed
 
-    private void jButtonBuscarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarClienteActionPerformed
+    private void jButtonAgendarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgendarCitaActionPerformed
+        FormularioAgendacionCitas formulario = new FormularioAgendacionCitas();
+        formulario.setVisible(true);
+    }//GEN-LAST:event_jButtonAgendarCitaActionPerformed
 
-    }//GEN-LAST:event_jButtonBuscarClienteActionPerformed
+    private void jButtonEliminarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarCitaActionPerformed
 
-    private void jButtonInsertarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertarClienteActionPerformed
+    }//GEN-LAST:event_jButtonEliminarCitaActionPerformed
 
-    }//GEN-LAST:event_jButtonInsertarClienteActionPerformed
-
-    private void jButtonEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarClienteActionPerformed
-
-    }//GEN-LAST:event_jButtonEliminarClienteActionPerformed
-
-    private void jButtonEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarClienteActionPerformed
-
-    }//GEN-LAST:event_jButtonEditarClienteActionPerformed
+    private void jButtonEditarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarCitaActionPerformed
+        FormularioAgendacionCitas formulario = new FormularioAgendacionCitas();
+        formulario.setVisible(true);
+    }//GEN-LAST:event_jButtonEditarCitaActionPerformed
 
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonBuscarCliente;
-    private javax.swing.JButton jButtonBuscarRestablecer;
-    private javax.swing.JButton jButtonEditarCliente;
-    private javax.swing.JButton jButtonEliminarCliente;
-    private javax.swing.JButton jButtonInsertarCliente;
+    private javax.swing.JButton jButtonAgendarCita;
+    private javax.swing.JButton jButtonBuscarCita;
+    private javax.swing.JButton jButtonEditarCita;
+    private javax.swing.JButton jButtonEliminarCita;
+    private javax.swing.JButton jButtonRestablecer;
     private javax.swing.JPanel jPanelClientes;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableCitas;

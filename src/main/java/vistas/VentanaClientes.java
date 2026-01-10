@@ -25,24 +25,25 @@ public class VentanaClientes extends javax.swing.JFrame {
     }
 
     private void configurarTabla() {
-        javax.swing.table.DefaultTableModel modelo
-                = new javax.swing.table.DefaultTableModel(
-                        null,
-                        new String[]{
-                            "ID",
-                            "Cédula",
-                            "Nombre",
-                            "Apellido",
-                            "Dirección",
-                            "Teléfono Convencional",
-                            "Teléfono Celular",
-                            "Correo Electrónico",
-                            "Estado"
-                        }
-                ) {
+        // Definir datos de ejemplo (clientes ficticios)
+        Object[][] datosEjemplo = {
+            {1, "1234567890", "Juan", "Pérez", "Calle Falsa 123", "02-123-4567", "098-765-4321", "juan.perez@email.com", "Activo"},
+            {2, "0987654321", "María", "Gómez", "Av. Siempre Viva 456", "02-987-6543", "099-123-4567", "maria.gomez@email.com", "Activo"},
+            {3, "1122334455", "Carlos", "López", "Calle Luna 789", "02-456-7890", "098-111-2222", "carlos.lopez@email.com", "Inactivo"},
+            {4, "5566778899", "Ana", "Martínez", "Av. Sol 321", "02-321-0987", "099-333-4444", "ana.martinez@email.com", "Activo"}
+        };
+
+        String[] columnas = {
+            "ID", "Cédula", "Nombre", "Apellido", "Dirección",
+            "Teléfono Convencional", "Teléfono Celular", "Correo Electrónico", "Estado"
+        };
+
+        javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
+                datosEjemplo, columnas
+        ) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // tabla solo lectura
+                return false; // solo lectura
             }
         };
 
@@ -86,7 +87,7 @@ public class VentanaClientes extends javax.swing.JFrame {
         jPanelClientes = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableClientes = new javax.swing.JTable();
-        jButtonBuscarRestablecer = new javax.swing.JButton();
+        jButtonRestablecer = new javax.swing.JButton();
         jButtonBuscarCliente = new javax.swing.JButton();
         jButtonInsertarCliente = new javax.swing.JButton();
         jButtonEliminarCliente = new javax.swing.JButton();
@@ -111,10 +112,10 @@ public class VentanaClientes extends javax.swing.JFrame {
         jTableClientes.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(jTableClientes);
 
-        jButtonBuscarRestablecer.setText("Restablecer");
-        jButtonBuscarRestablecer.addActionListener(new java.awt.event.ActionListener() {
+        jButtonRestablecer.setText("Restablecer");
+        jButtonRestablecer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonBuscarRestablecerActionPerformed(evt);
+                jButtonRestablecerActionPerformed(evt);
             }
         });
 
@@ -155,7 +156,7 @@ public class VentanaClientes extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonRestablecer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -165,7 +166,7 @@ public class VentanaClientes extends javax.swing.JFrame {
             jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelClientesLayout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -196,16 +197,25 @@ public class VentanaClientes extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonBuscarRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarRestablecerActionPerformed
-
-    }//GEN-LAST:event_jButtonBuscarRestablecerActionPerformed
+    private void jButtonRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRestablecerActionPerformed
+        configurarTabla();
+        configurarAnchoColumnas();
+    }//GEN-LAST:event_jButtonRestablecerActionPerformed
 
     private void jButtonBuscarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarClienteActionPerformed
+        String criterio = javax.swing.JOptionPane.showInputDialog(
+                this,
+                "Ingrese el nombre del cliente, nombre del empleado o fecha de cita a buscar:",
+                "Buscar Cliente",
+                javax.swing.JOptionPane.QUESTION_MESSAGE
+        );
+
 
     }//GEN-LAST:event_jButtonBuscarClienteActionPerformed
 
     private void jButtonInsertarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertarClienteActionPerformed
-
+        FormularioRegistroCliente formulario = new FormularioRegistroCliente();
+        formulario.setVisible(true);
     }//GEN-LAST:event_jButtonInsertarClienteActionPerformed
 
     private void jButtonEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarClienteActionPerformed
@@ -213,7 +223,8 @@ public class VentanaClientes extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonEliminarClienteActionPerformed
 
     private void jButtonEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarClienteActionPerformed
-
+        FormularioRegistroCliente formulario = new FormularioRegistroCliente();
+        formulario.setVisible(true);
     }//GEN-LAST:event_jButtonEditarClienteActionPerformed
 
     /**
@@ -222,10 +233,10 @@ public class VentanaClientes extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBuscarCliente;
-    private javax.swing.JButton jButtonBuscarRestablecer;
     private javax.swing.JButton jButtonEditarCliente;
     private javax.swing.JButton jButtonEliminarCliente;
     private javax.swing.JButton jButtonInsertarCliente;
+    private javax.swing.JButton jButtonRestablecer;
     private javax.swing.JPanel jPanelClientes;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableClientes;

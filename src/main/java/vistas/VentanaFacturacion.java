@@ -4,6 +4,8 @@
  */
 package vistas;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author USUARO_PC
@@ -23,18 +25,29 @@ public class VentanaFacturacion extends javax.swing.JFrame {
     }
 
     private void configurarTabla() {
-        javax.swing.table.DefaultTableModel modelo
-                = new javax.swing.table.DefaultTableModel(
-                        null,
-                        new String[]{
-                            "ID",
-                            "Fecha de emision",
-                            "Subtotal",
-                            "IVA",
-                            "Total  ",
-                            "Cliente",
-                            "Usuario",}
-                ) {
+        // Datos de ejemplo de facturas (ficticias)
+        Object[][] datosFacturas = {
+            {1001, "2026-01-05", "85.00", "10.20", "95.20", "Juan Pérez", "ana_lopez", "Activo"},
+            {1002, "2026-01-06", "120.00", "14.40", "134.40", "María Gómez", "carlos_ruiz", "Activo"},
+            {1003, "2026-01-07", "60.00", "7.20", "67.20", "Luis Martínez", "ana_lopez", "Activo"},
+            {1004, "2026-01-08", "200.00", "24.00", "224.00", "Sofía Ramírez", "javier_torres", "Activo"}
+        };
+
+        String[] columnas = {
+            "ID",
+            "Fecha de emision",
+            "Subtotal",
+            "IVA",
+            "Total",
+            "Cliente",
+            "Usuario",
+            "Estado"
+        };
+
+        javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
+                datosFacturas,
+                columnas
+        ) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // tabla solo lectura
@@ -47,13 +60,15 @@ public class VentanaFacturacion extends javax.swing.JFrame {
     private void configurarAnchoColumnas() {
         jTableFacturacion.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
 
-        jTableFacturacion.getColumnModel().getColumn(0).setPreferredWidth(50);   // ID
-        jTableFacturacion.getColumnModel().getColumn(1).setPreferredWidth(120);  // Cédula
-        jTableFacturacion.getColumnModel().getColumn(2).setPreferredWidth(80);  // Nombre
-        jTableFacturacion.getColumnModel().getColumn(3).setPreferredWidth(80);  // Apellido
-        jTableFacturacion.getColumnModel().getColumn(4).setPreferredWidth(80);  // Dirección
-        jTableFacturacion.getColumnModel().getColumn(5).setPreferredWidth(150);  // Tel Conv.
-        jTableFacturacion.getColumnModel().getColumn(6).setPreferredWidth(150);
+        // Ajustar según el contenido real de la tabla de FACTURAS
+        jTableFacturacion.getColumnModel().getColumn(0).setPreferredWidth(60);   // ID
+        jTableFacturacion.getColumnModel().getColumn(1).setPreferredWidth(130);  // Fecha de emision
+        jTableFacturacion.getColumnModel().getColumn(2).setPreferredWidth(90);   // Subtotal
+        jTableFacturacion.getColumnModel().getColumn(3).setPreferredWidth(70);   // IVA
+        jTableFacturacion.getColumnModel().getColumn(4).setPreferredWidth(90);   // Total
+        jTableFacturacion.getColumnModel().getColumn(5).setPreferredWidth(160);  // Cliente
+        jTableFacturacion.getColumnModel().getColumn(6).setPreferredWidth(120);  // Usuario
+        jTableFacturacion.getColumnModel().getColumn(7).setPreferredWidth(90);   // Estado
     }
 
     private void configurarCierre() {
@@ -79,11 +94,9 @@ public class VentanaFacturacion extends javax.swing.JFrame {
         jPanelClientes = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableFacturacion = new javax.swing.JTable();
-        jButtonBuscarRestablecer = new javax.swing.JButton();
-        jButtonBuscarCliente = new javax.swing.JButton();
-        jButtonInsertarCliente = new javax.swing.JButton();
-        jButtonEliminarCliente = new javax.swing.JButton();
-        jButtonEditarCliente = new javax.swing.JButton();
+        jButtonRestablecer = new javax.swing.JButton();
+        jButtonBuscarFactura = new javax.swing.JButton();
+        jButtonCrearFacturas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -104,38 +117,24 @@ public class VentanaFacturacion extends javax.swing.JFrame {
         jTableFacturacion.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(jTableFacturacion);
 
-        jButtonBuscarRestablecer.setText("Restablecer");
-        jButtonBuscarRestablecer.addActionListener(new java.awt.event.ActionListener() {
+        jButtonRestablecer.setText("Restablecer");
+        jButtonRestablecer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonBuscarRestablecerActionPerformed(evt);
+                jButtonRestablecerActionPerformed(evt);
             }
         });
 
-        jButtonBuscarCliente.setText("Buscar");
-        jButtonBuscarCliente.addActionListener(new java.awt.event.ActionListener() {
+        jButtonBuscarFactura.setText("Buscar");
+        jButtonBuscarFactura.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonBuscarClienteActionPerformed(evt);
+                jButtonBuscarFacturaActionPerformed(evt);
             }
         });
 
-        jButtonInsertarCliente.setText("Insertar");
-        jButtonInsertarCliente.addActionListener(new java.awt.event.ActionListener() {
+        jButtonCrearFacturas.setText("Crear factura");
+        jButtonCrearFacturas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonInsertarClienteActionPerformed(evt);
-            }
-        });
-
-        jButtonEliminarCliente.setText("Eliminar");
-        jButtonEliminarCliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEliminarClienteActionPerformed(evt);
-            }
-        });
-
-        jButtonEditarCliente.setText("Editar");
-        jButtonEditarCliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEditarClienteActionPerformed(evt);
+                jButtonCrearFacturasActionPerformed(evt);
             }
         });
 
@@ -147,11 +146,10 @@ public class VentanaFacturacion extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 719, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jButtonBuscarFactura, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButtonRestablecer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButtonCrearFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(34, 34, 34))
         );
         jPanelClientesLayout.setVerticalGroup(
@@ -159,15 +157,11 @@ public class VentanaFacturacion extends javax.swing.JFrame {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
             .addGroup(jPanelClientesLayout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonBuscarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonCrearFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -185,36 +179,34 @@ public class VentanaFacturacion extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonBuscarRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarRestablecerActionPerformed
+    private void jButtonRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRestablecerActionPerformed
+        configurarTabla();
+        configurarAnchoColumnas();
+    }//GEN-LAST:event_jButtonRestablecerActionPerformed
 
-    }//GEN-LAST:event_jButtonBuscarRestablecerActionPerformed
+    private void jButtonBuscarFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarFacturaActionPerformed
+        String criterio = javax.swing.JOptionPane.showInputDialog(
+                this,
+                "Ingrese el númer de la factura, nombre del cliente o nombre del usuario:",
+                "Buscar Factura",
+                javax.swing.JOptionPane.QUESTION_MESSAGE
+        );
+    }//GEN-LAST:event_jButtonBuscarFacturaActionPerformed
 
-    private void jButtonBuscarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarClienteActionPerformed
-
-    }//GEN-LAST:event_jButtonBuscarClienteActionPerformed
-
-    private void jButtonInsertarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertarClienteActionPerformed
-
-    }//GEN-LAST:event_jButtonInsertarClienteActionPerformed
-
-    private void jButtonEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarClienteActionPerformed
-
-    }//GEN-LAST:event_jButtonEliminarClienteActionPerformed
-
-    private void jButtonEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarClienteActionPerformed
-
-    }//GEN-LAST:event_jButtonEditarClienteActionPerformed
+    private void jButtonCrearFacturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCrearFacturasActionPerformed
+        CreacionFacturas creacion = new CreacionFacturas(this); // ← pasa "this"
+        creacion.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_jButtonCrearFacturasActionPerformed
 
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonBuscarCliente;
-    private javax.swing.JButton jButtonBuscarRestablecer;
-    private javax.swing.JButton jButtonEditarCliente;
-    private javax.swing.JButton jButtonEliminarCliente;
-    private javax.swing.JButton jButtonInsertarCliente;
+    private javax.swing.JButton jButtonBuscarFactura;
+    private javax.swing.JButton jButtonCrearFacturas;
+    private javax.swing.JButton jButtonRestablecer;
     private javax.swing.JPanel jPanelClientes;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableFacturacion;

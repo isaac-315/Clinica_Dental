@@ -10,7 +10,7 @@ package vistas;
  */
 public class VentanaCargos extends javax.swing.JFrame {
 
-   private VentanaPrincipal ventanaPrincipal;
+    private VentanaPrincipal ventanaPrincipal;
 
     public VentanaCargos(VentanaPrincipal ventanaPrincipal) {
         this.ventanaPrincipal = ventanaPrincipal;
@@ -20,25 +20,37 @@ public class VentanaCargos extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
     }
-    
-     private void configurarTabla() {
-        javax.swing.table.DefaultTableModel modelo
-                = new javax.swing.table.DefaultTableModel(
-                        null,
-                        new String[]{
-                            "ID",
-                            "Nombre"
-                        }
-                ) {
+
+    private void configurarTabla() {
+        // Definir los cargos fijos (ajusta según tus necesidades)
+        String[] cargosFijos = {
+            "Odontólogo",
+            "Auxiliar Dental",
+            "Recepcionista",
+            "Higienista Dental",
+            "Asistente Administrativo",
+            "Gerente"
+        };
+
+        // Crear el modelo con columnas
+        javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
+                new Object[][]{}, // inicialmente vacío
+                new String[]{"ID", "Nombre"}
+        ) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // tabla solo lectura
+                return false; // solo lectura
             }
         };
 
+        // Llenar el modelo con los cargos fijos
+        for (int i = 0; i < cargosFijos.length; i++) {
+            // Usamos i+1 como ID (1, 2, 3...)
+            modelo.addRow(new Object[]{i + 1, cargosFijos[i]});
+        }
+
         jTableCargos.setModel(modelo);
     }
-
 
     private void configurarCierre() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -63,11 +75,6 @@ public class VentanaCargos extends javax.swing.JFrame {
         jPanelClientes = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableCargos = new javax.swing.JTable();
-        jButtonBuscarRestablecer = new javax.swing.JButton();
-        jButtonBuscarCliente = new javax.swing.JButton();
-        jButtonInsertarCliente = new javax.swing.JButton();
-        jButtonEliminarCliente = new javax.swing.JButton();
-        jButtonEditarCliente = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -88,70 +95,14 @@ public class VentanaCargos extends javax.swing.JFrame {
         jTableCargos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(jTableCargos);
 
-        jButtonBuscarRestablecer.setText("Restablecer");
-        jButtonBuscarRestablecer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonBuscarRestablecerActionPerformed(evt);
-            }
-        });
-
-        jButtonBuscarCliente.setText("Buscar");
-        jButtonBuscarCliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonBuscarClienteActionPerformed(evt);
-            }
-        });
-
-        jButtonInsertarCliente.setText("Insertar");
-        jButtonInsertarCliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonInsertarClienteActionPerformed(evt);
-            }
-        });
-
-        jButtonEliminarCliente.setText("Eliminar");
-        jButtonEliminarCliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEliminarClienteActionPerformed(evt);
-            }
-        });
-
-        jButtonEditarCliente.setText("Editar");
-        jButtonEditarCliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEditarClienteActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanelClientesLayout = new javax.swing.GroupLayout(jPanelClientes);
         jPanelClientes.setLayout(jPanelClientesLayout);
         jPanelClientesLayout.setHorizontalGroup(
             jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelClientesLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 505, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
-                .addGroup(jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 88, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 789, Short.MAX_VALUE)
         );
         jPanelClientesLayout.setVerticalGroup(
             jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelClientesLayout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanelClientesLayout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -171,37 +122,11 @@ public class VentanaCargos extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonBuscarRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarRestablecerActionPerformed
-
-    }//GEN-LAST:event_jButtonBuscarRestablecerActionPerformed
-
-    private void jButtonBuscarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarClienteActionPerformed
-
-    }//GEN-LAST:event_jButtonBuscarClienteActionPerformed
-
-    private void jButtonInsertarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertarClienteActionPerformed
-
-    }//GEN-LAST:event_jButtonInsertarClienteActionPerformed
-
-    private void jButtonEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarClienteActionPerformed
-
-    }//GEN-LAST:event_jButtonEliminarClienteActionPerformed
-
-    private void jButtonEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarClienteActionPerformed
-
-    }//GEN-LAST:event_jButtonEditarClienteActionPerformed
-
     /**
      * @param args the command line arguments
      */
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonBuscarCliente;
-    private javax.swing.JButton jButtonBuscarRestablecer;
-    private javax.swing.JButton jButtonEditarCliente;
-    private javax.swing.JButton jButtonEliminarCliente;
-    private javax.swing.JButton jButtonInsertarCliente;
     private javax.swing.JPanel jPanelClientes;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableCargos;
