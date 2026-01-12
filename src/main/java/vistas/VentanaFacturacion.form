@@ -47,11 +47,11 @@
                   <Component id="jScrollPane1" pref="719" max="32767" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jButtonBuscarCliente" alignment="1" min="-2" pref="165" max="-2" attributes="0"/>
-                      <Component id="jButtonBuscarRestablecer" alignment="1" min="-2" pref="165" max="-2" attributes="0"/>
-                      <Component id="jButtonInsertarCliente" alignment="1" min="-2" pref="165" max="-2" attributes="0"/>
-                      <Component id="jButtonEliminarCliente" alignment="1" min="-2" pref="165" max="-2" attributes="0"/>
-                      <Component id="jButtonEditarCliente" alignment="1" min="-2" pref="165" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jButtonBuscarFactura" alignment="1" min="-2" pref="165" max="-2" attributes="0"/>
+                          <Component id="jButtonRestablecer" alignment="1" min="-2" pref="165" max="-2" attributes="0"/>
+                      </Group>
+                      <Component id="jButtonCrearFacturas" min="-2" pref="165" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
               </Group>
@@ -62,15 +62,11 @@
               <Component id="jScrollPane1" alignment="0" pref="425" max="32767" attributes="0"/>
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
-                  <Component id="jButtonBuscarRestablecer" min="-2" pref="34" max="-2" attributes="0"/>
+                  <Component id="jButtonRestablecer" min="-2" pref="34" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="jButtonBuscarCliente" min="-2" pref="34" max="-2" attributes="0"/>
+                  <Component id="jButtonBuscarFactura" min="-2" pref="34" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="jButtonInsertarCliente" min="-2" pref="34" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="jButtonEliminarCliente" min="-2" pref="34" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="jButtonEditarCliente" min="-2" pref="34" max="-2" attributes="0"/>
+                  <Component id="jButtonCrearFacturas" min="-2" pref="34" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -102,44 +98,28 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="jButtonBuscarRestablecer">
+        <Component class="javax.swing.JButton" name="jButtonRestablecer">
           <Properties>
             <Property name="text" type="java.lang.String" value="Restablecer"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonBuscarRestablecerActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonRestablecerActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonBuscarCliente">
+        <Component class="javax.swing.JButton" name="jButtonBuscarFactura">
           <Properties>
             <Property name="text" type="java.lang.String" value="Buscar"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonBuscarClienteActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonBuscarFacturaActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonInsertarCliente">
+        <Component class="javax.swing.JButton" name="jButtonCrearFacturas">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Insertar"/>
+            <Property name="text" type="java.lang.String" value="Crear factura"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonInsertarClienteActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButtonEliminarCliente">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Eliminar"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonEliminarClienteActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButtonEditarCliente">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Editar"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonEditarClienteActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCrearFacturasActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

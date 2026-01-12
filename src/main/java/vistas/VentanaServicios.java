@@ -16,23 +16,34 @@ public class VentanaServicios extends javax.swing.JFrame {
         this.ventanaPrincipal = ventanaPrincipal;
         initComponents();
         configurarTabla();
-        //configurarAnchoColumnas();
         configurarCierre();
         setLocationRelativeTo(null);
         setResizable(false);
     }
 
     private void configurarTabla() {
-        javax.swing.table.DefaultTableModel modelo
-                = new javax.swing.table.DefaultTableModel(
-                        null,
-                        new String[]{
-                            "ID",
-                            "Nombre",
-                            "Precio",
-                            "IVA",
-                            "Estado"}
-                ) {
+        // Datos de ejemplo de servicios dentales (ficticios)
+        Object[][] datosServicios = {
+            {1, "Consulta general", "25.00", "3.00", "Activo"},
+            {2, "Limpieza dental", "60.00", "7.20", "Activo"},
+            {3, "Extracción simple", "85.00", "10.20", "Activo"},
+            {4, "Blanqueamiento dental", "150.00", "18.00", "Activo"},
+            {5, "Empaste dental", "70.00", "8.40", "Activo"},
+            {6, "Radiografía dental", "20.00", "2.40", "Inactivo"}
+        };
+
+        String[] columnas = {
+            "ID",
+            "Nombre",
+            "Precio",
+            "IVA",
+            "Estado"
+        };
+
+        javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
+                datosServicios,
+                columnas
+        ) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // tabla solo lectura
@@ -41,7 +52,7 @@ public class VentanaServicios extends javax.swing.JFrame {
 
         jTableServicios.setModel(modelo);
     }
-    
+
     private void configurarCierre() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -65,11 +76,11 @@ public class VentanaServicios extends javax.swing.JFrame {
         jPanelClientes = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableServicios = new javax.swing.JTable();
-        jButtonBuscarRestablecer = new javax.swing.JButton();
-        jButtonBuscarCliente = new javax.swing.JButton();
-        jButtonInsertarCliente = new javax.swing.JButton();
-        jButtonEliminarCliente = new javax.swing.JButton();
-        jButtonEditarCliente = new javax.swing.JButton();
+        jButtonRestablecer = new javax.swing.JButton();
+        jButtonBuscarServicio = new javax.swing.JButton();
+        jButtonIngresarServicio = new javax.swing.JButton();
+        jButtonEliminarServicio = new javax.swing.JButton();
+        jButtonEditarServicio = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -90,38 +101,38 @@ public class VentanaServicios extends javax.swing.JFrame {
         jTableServicios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(jTableServicios);
 
-        jButtonBuscarRestablecer.setText("Restablecer");
-        jButtonBuscarRestablecer.addActionListener(new java.awt.event.ActionListener() {
+        jButtonRestablecer.setText("Restablecer");
+        jButtonRestablecer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonBuscarRestablecerActionPerformed(evt);
+                jButtonRestablecerActionPerformed(evt);
             }
         });
 
-        jButtonBuscarCliente.setText("Buscar");
-        jButtonBuscarCliente.addActionListener(new java.awt.event.ActionListener() {
+        jButtonBuscarServicio.setText("Buscar");
+        jButtonBuscarServicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonBuscarClienteActionPerformed(evt);
+                jButtonBuscarServicioActionPerformed(evt);
             }
         });
 
-        jButtonInsertarCliente.setText("Insertar");
-        jButtonInsertarCliente.addActionListener(new java.awt.event.ActionListener() {
+        jButtonIngresarServicio.setText("Ingresar Servicio");
+        jButtonIngresarServicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonInsertarClienteActionPerformed(evt);
+                jButtonIngresarServicioActionPerformed(evt);
             }
         });
 
-        jButtonEliminarCliente.setText("Eliminar");
-        jButtonEliminarCliente.addActionListener(new java.awt.event.ActionListener() {
+        jButtonEliminarServicio.setText("Eliminar");
+        jButtonEliminarServicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEliminarClienteActionPerformed(evt);
+                jButtonEliminarServicioActionPerformed(evt);
             }
         });
 
-        jButtonEditarCliente.setText("Editar");
-        jButtonEditarCliente.addActionListener(new java.awt.event.ActionListener() {
+        jButtonEditarServicio.setText("Editar");
+        jButtonEditarServicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEditarClienteActionPerformed(evt);
+                jButtonEditarServicioActionPerformed(evt);
             }
         });
 
@@ -130,30 +141,30 @@ public class VentanaServicios extends javax.swing.JFrame {
         jPanelClientesLayout.setHorizontalGroup(
             jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelClientesLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 574, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addGroup(jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 38, Short.MAX_VALUE))
+                    .addComponent(jButtonRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBuscarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonIngresarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonEliminarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonEditarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22))
         );
         jPanelClientesLayout.setVerticalGroup(
             jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
             .addGroup(jPanelClientesLayout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addComponent(jButtonBuscarRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(54, 54, 54)
+                .addComponent(jButtonRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonBuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonBuscarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonInsertarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonIngresarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonEliminarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonEditarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -171,36 +182,36 @@ public class VentanaServicios extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonBuscarRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarRestablecerActionPerformed
+    private void jButtonRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRestablecerActionPerformed
 
-    }//GEN-LAST:event_jButtonBuscarRestablecerActionPerformed
+    }//GEN-LAST:event_jButtonRestablecerActionPerformed
 
-    private void jButtonBuscarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarClienteActionPerformed
+    private void jButtonBuscarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarServicioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonBuscarServicioActionPerformed
 
-    }//GEN-LAST:event_jButtonBuscarClienteActionPerformed
+    private void jButtonIngresarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIngresarServicioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonIngresarServicioActionPerformed
 
-    private void jButtonInsertarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertarClienteActionPerformed
+    private void jButtonEliminarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarServicioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonEliminarServicioActionPerformed
 
-    }//GEN-LAST:event_jButtonInsertarClienteActionPerformed
-
-    private void jButtonEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarClienteActionPerformed
-
-    }//GEN-LAST:event_jButtonEliminarClienteActionPerformed
-
-    private void jButtonEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarClienteActionPerformed
-
-    }//GEN-LAST:event_jButtonEditarClienteActionPerformed
+    private void jButtonEditarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarServicioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonEditarServicioActionPerformed
 
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonBuscarCliente;
-    private javax.swing.JButton jButtonBuscarRestablecer;
-    private javax.swing.JButton jButtonEditarCliente;
-    private javax.swing.JButton jButtonEliminarCliente;
-    private javax.swing.JButton jButtonInsertarCliente;
+    private javax.swing.JButton jButtonBuscarServicio;
+    private javax.swing.JButton jButtonEditarServicio;
+    private javax.swing.JButton jButtonEliminarServicio;
+    private javax.swing.JButton jButtonIngresarServicio;
+    private javax.swing.JButton jButtonRestablecer;
     private javax.swing.JPanel jPanelClientes;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableServicios;
