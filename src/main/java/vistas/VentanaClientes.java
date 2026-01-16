@@ -4,7 +4,14 @@
  */
 package vistas;
 
+import controladores.ClienteControl;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import modelos.Cliente;
+import modelos.ClienteDAO;
 
 /**
  *
@@ -25,29 +32,51 @@ public class VentanaClientes extends javax.swing.JFrame {
     }
 
     private void configurarTabla() {
-        // Definir datos de ejemplo (clientes ficticios)
-        Object[][] datosEjemplo = {
-            {1, "1234567890", "Juan", "Pérez", "Calle Falsa 123", "02-123-4567", "098-765-4321", "juan.perez@email.com", "Activo"},
-            {2, "0987654321", "María", "Gómez", "Av. Siempre Viva 456", "02-987-6543", "099-123-4567", "maria.gomez@email.com", "Activo"},
-            {3, "1122334455", "Carlos", "López", "Calle Luna 789", "02-456-7890", "098-111-2222", "carlos.lopez@email.com", "Inactivo"},
-            {4, "5566778899", "Ana", "Martínez", "Av. Sol 321", "02-321-0987", "099-333-4444", "ana.martinez@email.com", "Activo"}
-        };
-
+        // Definir columnas
         String[] columnas = {
             "ID", "Cédula", "Nombre", "Apellido", "Dirección",
             "Teléfono Convencional", "Teléfono Celular", "Correo Electrónico", "Estado"
         };
 
+        // Crear modelo vacío
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
-                datosEjemplo, columnas
+                null, columnas
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // solo lectura
+                return false;
             }
         };
 
+        // Cargar datos desde la base de datos
+        try {
+            ClienteDAO clienteDAO = new ClienteDAO();
+            List<Cliente> clientes = clienteDAO.listarTodos();
+
+            for (Cliente c : clientes) {
+                Object[] fila = {
+                    c.getCliId(),
+                    c.getCliCedula(),
+                    c.getCliNombre(),
+                    c.getCliApellido(),
+                    c.getCliDireccion(),
+                    c.getCliTelefonoConvencional(),
+                    c.getCliTelefonoCelular(),
+                    c.getCliCorreoElectronico(),
+                    c.getEstadoTexto() // "Activo" o "Inactivo"
+                };
+                modelo.addRow(fila);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar los clientes desde la base de datos:\n" + e.getMessage(),
+                    "Error de conexión",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+
         jTableClientes.setModel(modelo);
+        configurarAnchoColumnas();
     }
 
     private void configurarAnchoColumnas() {
@@ -62,6 +91,42 @@ public class VentanaClientes extends javax.swing.JFrame {
         jTableClientes.getColumnModel().getColumn(6).setPreferredWidth(150);  // Celular
         jTableClientes.getColumnModel().getColumn(7).setPreferredWidth(200);  // Correo
         jTableClientes.getColumnModel().getColumn(8).setPreferredWidth(80);   // Estado
+    }
+
+    public void refrescarTabla() {
+        configurarTabla();
+    }
+
+    private void actualizarTablaConClientes(List<Cliente> clientes) {
+        String[] columnas = {
+            "ID", "Cédula", "Nombre", "Apellido", "Dirección",
+            "Teléfono Convencional", "Teléfono Celular", "Correo Electrónico", "Estado"
+        };
+
+        DefaultTableModel modelo = new DefaultTableModel(null, columnas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        for (Cliente c : clientes) {
+            Object[] fila = {
+                c.getCliId(),
+                c.getCliCedula(),
+                c.getCliNombre(),
+                c.getCliApellido(),
+                c.getCliDireccion(),
+                c.getCliTelefonoConvencional(),
+                c.getCliTelefonoCelular(),
+                c.getCliCorreoElectronico(),
+                c.getEstadoTexto()
+            };
+            modelo.addRow(fila);
+        }
+
+        jTableClientes.setModel(modelo);
+        configurarAnchoColumnas();
     }
 
     private void configurarCierre() {
@@ -203,27 +268,141 @@ public class VentanaClientes extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonRestablecerActionPerformed
 
     private void jButtonBuscarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarClienteActionPerformed
-        String criterio = javax.swing.JOptionPane.showInputDialog(
+        String criterio = JOptionPane.showInputDialog(
                 this,
-                "Ingrese el nombre del cliente, nombre del empleado o fecha de cita a buscar:",
+                "Ingrese el nombre, apellido o cédula del cliente a buscar:",
                 "Buscar Cliente",
-                javax.swing.JOptionPane.QUESTION_MESSAGE
+                JOptionPane.QUESTION_MESSAGE
         );
+
+        if (criterio == null || criterio.trim().isEmpty()) {
+            return; // Canceló o dejó vacío
+        }
+
+        try {
+            // Cargar todos los clientes una sola vez
+            ClienteControl clienteControl = new ClienteControl();
+            List<Cliente> todosClientes = clienteControl.listarTodos();
+            List<Cliente> coincidencias = new ArrayList<>();
+
+            String busqueda = criterio.trim().toLowerCase();
+
+            for (Cliente c : todosClientes) {
+                if (c.getCliCedula().toLowerCase().contains(busqueda)
+                        || c.getCliNombre().toLowerCase().contains(busqueda)
+                        || c.getCliApellido().toLowerCase().contains(busqueda)) {
+                    coincidencias.add(c);
+                }
+            }
+
+            if (coincidencias.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "No se encontraron clientes con el criterio: \"" + criterio.trim() + "\"",
+                        "Sin resultados",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                // Actualizar la tabla SOLO con los resultados
+                actualizarTablaConClientes(coincidencias);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al buscar clientes:\n" + e.getMessage(),
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
 
 
     }//GEN-LAST:event_jButtonBuscarClienteActionPerformed
 
     private void jButtonInsertarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertarClienteActionPerformed
-        FormularioRegistroCliente formulario = new FormularioRegistroCliente();
+        FormularioRegistroCliente formulario = new FormularioRegistroCliente(this); // ← pasa "this"
         formulario.setVisible(true);
     }//GEN-LAST:event_jButtonInsertarClienteActionPerformed
 
     private void jButtonEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarClienteActionPerformed
+        int filaSeleccionada = jTableClientes.getSelectedRow();
 
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Por favor, seleccione una fila de la tabla para eliminar.",
+                    "Ninguna selección",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Obtener el ID del cliente desde la primera columna (asumiendo que es cli_id)
+        int idCliente = (int) jTableClientes.getValueAt(filaSeleccionada, 0);
+
+        // Confirmación
+        int confirmacion = JOptionPane.showConfirmDialog(
+                this,
+                "¿Está seguro de que desea eliminar al cliente con ID " + idCliente + "?\n"
+                + "Esta acción no se puede deshacer.",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            try {
+                ClienteControl control = new ClienteControl();
+                // Aquí asumimos que tienes un método 'eliminar(int id)' en ClienteControl
+                // Si no, lo creamos más abajo.
+                control.eliminar(idCliente);
+
+                JOptionPane.showMessageDialog(this,
+                        "Cliente eliminado exitosamente.",
+                        "Éxito",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+                // Actualizar la tabla
+                configurarTabla();
+
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this,
+                        "Error al eliminar el cliente:\n" + e.getMessage(),
+                        "Error de base de datos",
+                        JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        }
     }//GEN-LAST:event_jButtonEliminarClienteActionPerformed
 
     private void jButtonEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarClienteActionPerformed
-        FormularioRegistroCliente formulario = new FormularioRegistroCliente();
+        int filaSeleccionada = jTableClientes.getSelectedRow();
+
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Por favor, seleccione una fila de la tabla para editar.",
+                    "Ninguna selección",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Obtener el ID desde la primera columna (asumiendo que es cli_id)
+        int idCliente = (int) jTableClientes.getValueAt(filaSeleccionada, 0);
+        String cedula = (String) jTableClientes.getValueAt(filaSeleccionada, 1);
+        String nombre = (String) jTableClientes.getValueAt(filaSeleccionada, 2);
+        String apellido = (String) jTableClientes.getValueAt(filaSeleccionada, 3);
+        String direccion = (String) jTableClientes.getValueAt(filaSeleccionada, 4);
+        String telConv = (String) jTableClientes.getValueAt(filaSeleccionada, 5);
+        String telCel = (String) jTableClientes.getValueAt(filaSeleccionada, 6);
+        String correo = (String) jTableClientes.getValueAt(filaSeleccionada, 7);
+        String estadoTexto = (String) jTableClientes.getValueAt(filaSeleccionada, 8);
+
+        // Convertir estado a char
+        char estadoChar = estadoTexto.equalsIgnoreCase("Activo") ? 'A' : 'I';
+
+        // Crear objeto Cliente con los datos reales
+        Cliente clienteSeleccionado = new Cliente(
+                idCliente, cedula, nombre, apellido, direccion,
+                telConv, telCel, correo, estadoChar
+        );
+
+        // Abrir el formulario EN MODO EDICIÓN
+        FormularioRegistroCliente formulario = new FormularioRegistroCliente(this, clienteSeleccionado);
         formulario.setVisible(true);
     }//GEN-LAST:event_jButtonEditarClienteActionPerformed
 

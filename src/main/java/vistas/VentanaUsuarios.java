@@ -4,7 +4,13 @@
  */
 package vistas;
 
+import java.sql.SQLException;
+import java.util.List;
 import javax.swing.JOptionPane;
+import modelos.Empleado;
+import modelos.EmpleadoDAO;
+import modelos.Usuario;
+import modelos.UsuarioDAO;
 
 /**
  *
@@ -25,24 +31,46 @@ public class VentanaUsuarios extends javax.swing.JFrame {
     }
 
     private void configurarTabla() {
-        // Datos: ID, Usuario, Nombre completo del empleado
-        Object[][] datosUsuarios = {
-            {1, "ana_lopez", "Ana López"},
-            {2, "carlos_ruiz", "Carlos Ruiz"},
-            {3, "maria_gomez", "María Gómez"},
-            {4, "javier_torres", "Javier Torres"}
-        };
-
         String[] columnas = {"ID", "Usuario", "Empleado"};
 
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
-                datosUsuarios, columnas
+                null, columnas
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // tabla solo lectura
+                return false;
             }
         };
+
+        try {
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+
+            List<Usuario> usuarios = usuarioDAO.listarTodos();
+
+            for (Usuario u : usuarios) {
+                // Obtener el empleado asociado
+                Empleado emp = empleadoDAO.obtenerPorId(u.getEmpId());
+                String nombreEmpleado = (emp != null)
+                        ? emp.getEmpNombre() + " " + emp.getEmpApellido()
+                        : "Empleado no encontrado";
+
+                Object[] fila = {
+                    u.getUsuId(),
+                    u.getUsuUsuario(),
+                    nombreEmpleado
+                };
+
+                modelo.addRow(fila);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar los usuarios desde la base de datos:\n" + e.getMessage(),
+                    "Error de conexión",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
 
         jTableUsuarios.setModel(modelo);
     }
@@ -195,17 +223,16 @@ public class VentanaUsuarios extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonCrearUsuarioActionPerformed
 
     private void jButtonEliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarUsuarioActionPerformed
-       String criterio = JOptionPane.showInputDialog(
-        this,
-        "Ingrese el nombre de usuario o ID del usuario a eliminar:",
-        "Eliminar Usuario",
-        JOptionPane.QUESTION_MESSAGE
-    );
+        String criterio = JOptionPane.showInputDialog(
+                this,
+                "Ingrese el nombre de usuario o ID del usuario a eliminar:",
+                "Eliminar Usuario",
+                JOptionPane.QUESTION_MESSAGE
+        );
     }//GEN-LAST:event_jButtonEliminarUsuarioActionPerformed
 
     private void jButtonEditarEditarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarEditarUsuarioActionPerformed
-        FormularioRegistroCliente formulario = new FormularioRegistroCliente();
-        formulario.setVisible(true);
+       
     }//GEN-LAST:event_jButtonEditarEditarUsuarioActionPerformed
 
     /**

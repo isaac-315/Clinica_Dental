@@ -4,6 +4,16 @@
  */
 package vistas;
 
+import java.sql.SQLException;
+import java.util.List;
+import javax.swing.JOptionPane;
+import modelos.Cargo;
+import modelos.CargoDAO;
+import modelos.Empleado;
+import modelos.EmpleadoDAO;
+import modelos.Usuario;
+import modelos.UsuarioDAO;
+
 /**
  *
  * @author USUARO_PC
@@ -23,14 +33,6 @@ public class VentanaEmpleados extends javax.swing.JFrame {
     }
 
     private void configurarTabla() {
-        // Datos de ejemplo de empleados (ficticios)
-        Object[][] datosEmpleados = {
-            {1, "1234567890", "Ana", "López", "Calle Roble 123", "02-123-4567", "098-765-4321", "ana.lopez@clinicadental.com", "Odontólogo", "ana_lopez"},
-            {2, "0987654321", "Carlos", "Ruiz", "Av. Central 456", "02-987-6543", "099-123-4567", "carlos.ruiz@clinicadental.com", "Auxiliar Dental", "carlos_ruiz"},
-            {3, "1122334455", "María", "Gómez", "Calle Sol 789", "02-456-7890", "098-111-2222", "maria.gomez@clinicadental.com", "Recepcionista", "maria_gomez"},
-            {4, "5566778899", "Javier", "Torres", "Av. Norte 321", "02-321-0987", "099-333-4444", "javier.torres@clinicadental.com", "Higienista Dental", "javier_torres"}
-        };
-
         String[] columnas = {
             "ID",
             "Cedula",
@@ -45,16 +47,55 @@ public class VentanaEmpleados extends javax.swing.JFrame {
         };
 
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
-                datosEmpleados,
-                columnas
+                null, columnas
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // solo lectura
+                return false;
             }
         };
 
-        jTableEmpleados.setModel(modelo); // Asegúrate de que el nombre de tu JTable sea jTableEmpleados
+        try {
+            EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+            CargoDAO cargoDAO = new CargoDAO();
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+            List<Empleado> empleados = empleadoDAO.listarTodos();
+
+            for (Empleado emp : empleados) {
+                // Obtener el cargo
+                Cargo cargo = cargoDAO.obtenerPorId(emp.getCarId());
+                String nombreCargo = (cargo != null) ? cargo.getNombreCompleto() : "Cargo no encontrado";
+
+                // Obtener el usuario
+                Usuario usuario = usuarioDAO.obtenerPorId(emp.getUsuId());
+                String nombreUsuario = (usuario != null) ? usuario.getUsuUsuario() : "Sin usuario";
+
+                Object[] fila = {
+                    emp.getEmpId(),
+                    emp.getEmpCedula(),
+                    emp.getEmpNombre(),
+                    emp.getEmpApellido(),
+                    emp.getEmpDireccion(),
+                    emp.getEmpTelefonoConvencional(),
+                    emp.getEmpTelefonoCelular(),
+                    emp.getEmpCorreoElectronico(),
+                    nombreCargo, // "Odontólogo", "Administrativo", etc.
+                    nombreUsuario // "ana_lopez", "carlos_ruiz", etc.
+                };
+
+                modelo.addRow(fila);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar los empleados desde la base de datos:\n" + e.getMessage(),
+                    "Error de conexión",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+
+        jTableEmpleados.setModel(modelo);
     }
 
     private void configurarAnchoColumnas() {
@@ -208,13 +249,13 @@ public class VentanaEmpleados extends javax.swing.JFrame {
 
     private void jButtonBuscarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarEmpleadoActionPerformed
         String criterio = javax.swing.JOptionPane.showInputDialog(
-        this,
-        "Ingrese el nombre, apellido o id del empleado:",
-        "Buscar Empleado",  // ← ¡Corregido el título!
-        javax.swing.JOptionPane.QUESTION_MESSAGE
-    );
-    
-   
+                this,
+                "Ingrese el nombre, apellido o id del empleado:",
+                "Buscar Empleado", // ← ¡Corregido el título!
+                javax.swing.JOptionPane.QUESTION_MESSAGE
+        );
+
+
     }//GEN-LAST:event_jButtonBuscarEmpleadoActionPerformed
 
     private void jButtonInsertarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertarEmpleadoActionPerformed

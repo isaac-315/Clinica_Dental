@@ -4,6 +4,16 @@
  */
 package vistas;
 
+import java.sql.SQLException;
+import java.util.List;
+import javax.swing.JOptionPane;
+import modelos.CitaDAO;
+import modelos.ClienteDAO;
+import modelos.Empleado;
+import modelos.EmpleadoDAO;
+import modelos.Cita;
+import modelos.Cliente;
+
 /**
  *
  * @author USUARO_PC
@@ -22,14 +32,6 @@ public class VentanaCitas extends javax.swing.JFrame {
     }
 
     private void configurarTabla() {
-        // Datos de ejemplo de citas (ficticias)
-        Object[][] datosCitas = {
-            {1, "2026-01-15", "Confirmada", "Juan Pérez", "Dra. Ana López"},
-            {2, "2026-01-16", "Pendiente", "María Gómez", "Dr. Carlos Ruiz"},
-            {3, "2026-01-17", "Cancelada", "Luis Martínez", "Dra. Ana López"},
-            {4, "2026-01-18", "Confirmada", "Sofía Ramírez", "Dr. Javier Torres"}
-        };
-
         String[] columnas = {
             "ID",
             "Fecha de cita",
@@ -39,14 +41,62 @@ public class VentanaCitas extends javax.swing.JFrame {
         };
 
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
-                datosCitas,
-                columnas
+                null, columnas
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // solo lectura
+                return false;
             }
         };
+
+        try {
+            // DAOs
+            CitaDAO citaDAO = new CitaDAO();
+            ClienteDAO clienteDAO = new ClienteDAO();
+            EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+
+            // Obtener todas las citas
+            List<Cita> citas = citaDAO.listarTodos();
+
+            for (Cita cita : citas) {
+                // Obtener cliente por cli_id
+                Cliente cliente = clienteDAO.obtenerPorId(cita.getCliId());
+                String nombreCliente = (cliente != null)
+                        ? cliente.getCliNombre() + " " + cliente.getCliApellido()
+                        : "Cliente no encontrado";
+
+                // Obtener empleado por emp_id
+                Empleado empleado = empleadoDAO.obtenerPorId(cita.getEmpId());
+                String nombreEmpleado = (empleado != null)
+                        ? empleado.getEmpNombre() + " " + empleado.getEmpApellido()
+                        : "Empleado no encontrado";
+
+                // Formatear fecha (opcional: puedes usar SimpleDateFormat si quieres otro formato)
+                String fecha = (cita.getCitaFechaHora() != null)
+                        ? cita.getCitaFechaHora().toString()
+                        : "Sin fecha";
+
+                // Convertir estado a texto legible
+                String estado = cita.getEstadoTexto(); // "Pendiente" o "Cancelada"
+
+                Object[] fila = {
+                    cita.getCitaId(),
+                    fecha,
+                    estado,
+                    nombreCliente,
+                    nombreEmpleado
+                };
+
+                modelo.addRow(fila);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar las citas desde la base de datos:\n" + e.getMessage(),
+                    "Error de conexión",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
 
         jTableCitas.setModel(modelo);
     }

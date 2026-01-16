@@ -4,7 +4,16 @@
  */
 package vistas;
 
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.List;
 import javax.swing.JOptionPane;
+import modelos.Cliente;
+import modelos.ClienteDAO;
+import modelos.FacturaCabecera;
+import modelos.FacturaCabeceraDAO;
+import modelos.Usuario;
+import modelos.UsuarioDAO;
 
 /**
  *
@@ -25,14 +34,6 @@ public class VentanaFacturacion extends javax.swing.JFrame {
     }
 
     private void configurarTabla() {
-        // Datos de ejemplo de facturas (ficticias)
-        Object[][] datosFacturas = {
-            {1001, "2026-01-05", "85.00", "10.20", "95.20", "Juan Pérez", "ana_lopez", "Activo"},
-            {1002, "2026-01-06", "120.00", "14.40", "134.40", "María Gómez", "carlos_ruiz", "Activo"},
-            {1003, "2026-01-07", "60.00", "7.20", "67.20", "Luis Martínez", "ana_lopez", "Activo"},
-            {1004, "2026-01-08", "200.00", "24.00", "224.00", "Sofía Ramírez", "javier_torres", "Activo"}
-        };
-
         String[] columnas = {
             "ID",
             "Fecha de emision",
@@ -45,14 +46,68 @@ public class VentanaFacturacion extends javax.swing.JFrame {
         };
 
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
-                datosFacturas,
-                columnas
+                null, columnas
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // tabla solo lectura
+                return false;
             }
         };
+
+        try {
+            FacturaCabeceraDAO facturaDAO = new FacturaCabeceraDAO();
+            ClienteDAO clienteDAO = new ClienteDAO();
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+            List<FacturaCabecera> facturas = facturaDAO.listarTodos();
+
+            // Formato de fecha (solo fecha, sin hora)
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+            for (FacturaCabecera fac : facturas) {
+                // Obtener cliente
+                Cliente cliente = clienteDAO.obtenerPorId(fac.getCliId());
+                String nombreCliente = (cliente != null)
+                        ? cliente.getCliNombre() + " " + cliente.getCliApellido()
+                        : "Cliente no encontrado";
+
+                // Obtener usuario
+                Usuario usuario = usuarioDAO.obtenerPorId(fac.getUsuId());
+                String nombreUsuario = (usuario != null)
+                        ? usuario.getUsuUsuario()
+                        : "Usuario no encontrado";
+
+                // Formatear fecha
+                String fecha = (fac.getFacFechaEmision() != null)
+                        ? sdf.format(fac.getFacFechaEmision())
+                        : "Sin fecha";
+
+                // Nota: En tu modelo actual, NO hay columna "Estado" en facturas.
+                // Si no la tienes en la BD, puedes omitirla o dejar un valor fijo.
+                // Aquí asumimos que todas las facturas son "Activo" (como en tu ejemplo).
+                String estado = "Activo";
+
+                Object[] fila = {
+                    fac.getFacId(),
+                    fecha,
+                    String.format("%.2f", fac.getFacSubtotal()),
+                    String.format("%.2f", fac.getFacIva()),
+                    String.format("%.2f", fac.getFacTotal()),
+                    nombreCliente,
+                    nombreUsuario,
+                    estado
+                };
+
+                modelo.addRow(fila);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar las facturas desde la base de datos:\n" + e.getMessage(),
+                    "Error de conexión",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
 
         jTableFacturacion.setModel(modelo);
     }

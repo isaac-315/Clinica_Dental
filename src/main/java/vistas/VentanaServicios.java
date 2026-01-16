@@ -4,6 +4,12 @@
  */
 package vistas;
 
+import java.sql.SQLException;
+import java.util.List;
+import javax.swing.JOptionPane;
+import modelos.Servicio;
+import modelos.ServicioDAO;
+
 /**
  *
  * @author USUARO_PC
@@ -22,16 +28,6 @@ public class VentanaServicios extends javax.swing.JFrame {
     }
 
     private void configurarTabla() {
-        // Datos de ejemplo de servicios dentales (ficticios)
-        Object[][] datosServicios = {
-            {1, "Consulta general", "25.00", "3.00", "Activo"},
-            {2, "Limpieza dental", "60.00", "7.20", "Activo"},
-            {3, "Extracción simple", "85.00", "10.20", "Activo"},
-            {4, "Blanqueamiento dental", "150.00", "18.00", "Activo"},
-            {5, "Empaste dental", "70.00", "8.40", "Activo"},
-            {6, "Radiografía dental", "20.00", "2.40", "Inactivo"}
-        };
-
         String[] columnas = {
             "ID",
             "Nombre",
@@ -41,14 +37,44 @@ public class VentanaServicios extends javax.swing.JFrame {
         };
 
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
-                datosServicios,
-                columnas
+                null, columnas
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // tabla solo lectura
+                return false;
             }
         };
+
+        try {
+            ServicioDAO servicioDAO = new ServicioDAO();
+            List<Servicio> servicios = servicioDAO.listarTodos();
+
+            for (Servicio s : servicios) {
+                // Formatear precio e IVA a 2 decimales como texto
+                String precio = String.format("%.2f", s.getSerPrecio());
+                String iva = String.format("%.2f", s.getSerIva());
+
+                // Convertir estado a texto legible
+                String estado = s.getEstadoTexto(); // "Activo" o "Inactivo"
+
+                Object[] fila = {
+                    s.getSerId(),
+                    s.getSerNombre(),
+                    precio,
+                    iva,
+                    estado
+                };
+
+                modelo.addRow(fila);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar los servicios desde la base de datos:\n" + e.getMessage(),
+                    "Error de conexión",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
 
         jTableServicios.setModel(modelo);
     }
