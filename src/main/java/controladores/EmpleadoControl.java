@@ -28,4 +28,8 @@ public class EmpleadoControl {
     public void guardar(Empleado empleado) throws SQLException {
         empleadoDAO.insertar(empleado);
     }
+
+    public Empleado obtenerPorCedula(String cedula) throws SQLException {
+        return empleadoDAO.obtenerPorCedula(cedula);
+    }
 }

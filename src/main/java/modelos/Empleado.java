@@ -1,14 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelos;
 
-/**
- *
- * @author USUARO_PC
- */
 public class Empleado {
+
     private int empId;
     private String empCedula;
     private String empNombre;
@@ -17,16 +10,14 @@ public class Empleado {
     private String empTelefonoConvencional;
     private String empTelefonoCelular;
     private String empCorreoElectronico;
-    private String carId; // FK a Cargo
-    private int usuId;    // FK a Usuario
 
-    public Empleado() {}
+    public Empleado() {
+    }
 
-    public Empleado(int empId, String empCedula, String empNombre, String empApellido,
+    // Constructor SIN ID (para INSERT)
+    public Empleado(String empCedula, String empNombre, String empApellido,
                     String empDireccion, String empTelefonoConvencional,
-                    String empTelefonoCelular, String empCorreoElectronico,
-                    String carId, int usuId) {
-        this.empId = empId;
+                    String empTelefonoCelular, String empCorreoElectronico) {
         this.empCedula = empCedula;
         this.empNombre = empNombre;
         this.empApellido = empApellido;
@@ -34,8 +25,20 @@ public class Empleado {
         this.empTelefonoConvencional = empTelefonoConvencional;
         this.empTelefonoCelular = empTelefonoCelular;
         this.empCorreoElectronico = empCorreoElectronico;
-        this.carId = carId;
-        this.usuId = usuId;
+    }
+    
+    // Constructor CON ID (para SELECT)
+    public Empleado(int id, String empCedula, String empNombre, String empApellido,
+                    String empDireccion, String empTelefonoConvencional,
+                    String empTelefonoCelular, String empCorreoElectronico) {
+        this.empId = id; // ← CORREGIDO: era "emp_Id"
+        this.empCedula = empCedula;
+        this.empNombre = empNombre;
+        this.empApellido = empApellido;
+        this.empDireccion = empDireccion;
+        this.empTelefonoConvencional = empTelefonoConvencional;
+        this.empTelefonoCelular = empTelefonoCelular;
+        this.empCorreoElectronico = empCorreoElectronico;
     }
 
     // Getters y Setters
@@ -62,10 +65,4 @@ public class Empleado {
 
     public String getEmpCorreoElectronico() { return empCorreoElectronico; }
     public void setEmpCorreoElectronico(String empCorreoElectronico) { this.empCorreoElectronico = empCorreoElectronico; }
-
-    public String getCarId() { return carId; }
-    public void setCarId(String carId) { this.carId = carId; }
-
-    public int getUsuId() { return usuId; }
-    public void setUsuId(int usuId) { this.usuId = usuId; }
 }

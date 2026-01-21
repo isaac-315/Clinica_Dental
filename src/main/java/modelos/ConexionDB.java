@@ -24,10 +24,13 @@ public class ConexionDB {
         }
     }
 
+    // 👇 MÉTODO CORREGIDO: Siempre devuelve una NUEVA conexión
     public static Connection getConnection() throws SQLException {
-        System.out.println("🔌 Intentando conectar a la base de datos...");
+        System.out.println("🔌 Creando NUEVA conexión a la base de datos...");
         Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-        System.out.println("✅ ¡Conexión exitosa a Oracle!");
+        // 👇 Asegura que cada operación sea visible inmediatamente
+        conn.setAutoCommit(true); 
+        System.out.println("✅ ¡Nueva conexión exitosa a Oracle!");
         return conn;
     }
 }

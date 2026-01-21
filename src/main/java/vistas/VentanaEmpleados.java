@@ -7,8 +7,6 @@ package vistas;
 import java.sql.SQLException;
 import java.util.List;
 import javax.swing.JOptionPane;
-import modelos.Cargo;
-import modelos.CargoDAO;
 import modelos.Empleado;
 import modelos.EmpleadoDAO;
 import modelos.Usuario;
@@ -25,27 +23,29 @@ public class VentanaEmpleados extends javax.swing.JFrame {
     public VentanaEmpleados(VentanaPrincipal ventanaPrincipal) {
         this.ventanaPrincipal = ventanaPrincipal;
         initComponents();
-        configurarTabla();
+        cargarDatosEnTabla();          // ← Aquí
         configurarAnchoColumnas();
         configurarCierre();
         setLocationRelativeTo(null);
         setResizable(false);
     }
 
-    private void configurarTabla() {
+    private void cargarDatosEnTabla() {
+        System.out.println("🔍 Iniciando carga de datos de empleados...");
+
+        // Definir columnas
         String[] columnas = {
             "ID",
-            "Cedula",
+            "Cédula",
             "Nombres",
             "Apellidos",
             "Dirección",
             "Teléfono Convencional",
             "Teléfono Celular",
-            "Correo electrónico",
-            "Cargo",
-            "ID de usuario"
+            "Correo Electrónico"
         };
 
+        // Crear modelo de tabla
         javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
                 null, columnas
         ) {
@@ -57,20 +57,13 @@ public class VentanaEmpleados extends javax.swing.JFrame {
 
         try {
             EmpleadoDAO empleadoDAO = new EmpleadoDAO();
-            CargoDAO cargoDAO = new CargoDAO();
-            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            System.out.println("✅ EmpleadoDAO creado correctamente");
 
             List<Empleado> empleados = empleadoDAO.listarTodos();
+            System.out.println("📊 Número de empleados recuperados: " + empleados.size());
 
             for (Empleado emp : empleados) {
-                // Obtener el cargo
-                Cargo cargo = cargoDAO.obtenerPorId(emp.getCarId());
-                String nombreCargo = (cargo != null) ? cargo.getNombreCompleto() : "Cargo no encontrado";
-
-                // Obtener el usuario
-                Usuario usuario = usuarioDAO.obtenerPorId(emp.getUsuId());
-                String nombreUsuario = (usuario != null) ? usuario.getUsuUsuario() : "Sin usuario";
-
+                System.out.println("📄 Empleado: ID=" + emp.getEmpId() + ", Cédula=" + emp.getEmpCedula());
                 Object[] fila = {
                     emp.getEmpId(),
                     emp.getEmpCedula(),
@@ -79,23 +72,26 @@ public class VentanaEmpleados extends javax.swing.JFrame {
                     emp.getEmpDireccion(),
                     emp.getEmpTelefonoConvencional(),
                     emp.getEmpTelefonoCelular(),
-                    emp.getEmpCorreoElectronico(),
-                    nombreCargo, // "Odontólogo", "Administrativo", etc.
-                    nombreUsuario // "ana_lopez", "carlos_ruiz", etc.
+                    emp.getEmpCorreoElectronico()
                 };
-
                 modelo.addRow(fila);
             }
 
         } catch (SQLException e) {
+            System.out.println("❌ ERROR SQL al cargar empleados: " + e.getMessage());
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this,
-                    "Error al cargar los empleados desde la base de datos:\n" + e.getMessage(),
-                    "Error de conexión",
+                    "Error al cargar los empleados:\n" + e.getMessage(),
+                    "Error de base de datos",
                     JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            System.out.println("💥 ERROR GENERAL al cargar empleados: " + e.getMessage());
             e.printStackTrace();
         }
 
+        // Asignar el modelo a la tabla
         jTableEmpleados.setModel(modelo);
+        System.out.println("✅ Tabla actualizada con el modelo");
     }
 
     private void configurarAnchoColumnas() {
@@ -109,8 +105,7 @@ public class VentanaEmpleados extends javax.swing.JFrame {
         jTableEmpleados.getColumnModel().getColumn(5).setPreferredWidth(150);  // Tel Conv.
         jTableEmpleados.getColumnModel().getColumn(6).setPreferredWidth(150);  // Celular
         jTableEmpleados.getColumnModel().getColumn(7).setPreferredWidth(150);  // Correo
-        jTableEmpleados.getColumnModel().getColumn(8).setPreferredWidth(80);   // Estado
-        jTableEmpleados.getColumnModel().getColumn(9).setPreferredWidth(80);
+        // ← Ya no hay columna 8
     }
 
     private void configurarCierre() {
@@ -122,6 +117,11 @@ public class VentanaEmpleados extends javax.swing.JFrame {
                 ventanaPrincipal.setVisible(true);
             }
         });
+    }
+
+    public void refrescarTabla() {
+        cargarDatosEnTabla(); // Solo recarga los datos
+        configurarAnchoColumnas(); // Ajusta el ancho si es necesario
     }
 
     /**
@@ -175,7 +175,7 @@ public class VentanaEmpleados extends javax.swing.JFrame {
             }
         });
 
-        jButtonInsertarEmpleado.setText("Insertar");
+        jButtonInsertarEmpleado.setText("Crear");
         jButtonInsertarEmpleado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonInsertarEmpleadoActionPerformed(evt);
@@ -243,7 +243,7 @@ public class VentanaEmpleados extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRestablecerActionPerformed
-        configurarTabla();
+        cargarDatosEnTabla(); // ← Usa el método correcto
         configurarAnchoColumnas();
     }//GEN-LAST:event_jButtonRestablecerActionPerformed
 
@@ -259,7 +259,7 @@ public class VentanaEmpleados extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonBuscarEmpleadoActionPerformed
 
     private void jButtonInsertarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertarEmpleadoActionPerformed
-        FormularioRegistroEmpleado formulario = new FormularioRegistroEmpleado();
+        FormularioRegistroEmpleado formulario = new FormularioRegistroEmpleado(this);
         formulario.setVisible(true);
     }//GEN-LAST:event_jButtonInsertarEmpleadoActionPerformed
 
@@ -268,7 +268,7 @@ public class VentanaEmpleados extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonEliminarEmpleadoActionPerformed
 
     private void jButtonEditarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarEmpleadoActionPerformed
-        FormularioRegistroEmpleado formulario = new FormularioRegistroEmpleado();
+        FormularioRegistroEmpleado formulario = new FormularioRegistroEmpleado(this);
         formulario.setVisible(true);
     }//GEN-LAST:event_jButtonEditarEmpleadoActionPerformed
 

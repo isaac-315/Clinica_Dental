@@ -4,9 +4,15 @@
  */
 package vistas;
 
+import controladores.CitaControl;
+import controladores.ClienteControl;
+import controladores.EmpleadoControl;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import modelos.CitaDAO;
 import modelos.ClienteDAO;
 import modelos.Empleado;
@@ -26,9 +32,15 @@ public class VentanaCitas extends javax.swing.JFrame {
         this.ventanaPrincipal = ventanaPrincipal;
         initComponents();
         configurarTabla();
+        configurarAnchoColumnas(); 
         configurarCierre();
         setLocationRelativeTo(null);
         setResizable(false);
+    }
+
+    public void refrescarTabla() {
+        configurarTabla();
+        configurarAnchoColumnas(); 
     }
 
     private void configurarTabla() {
@@ -40,9 +52,7 @@ public class VentanaCitas extends javax.swing.JFrame {
             "Empleado asignado"
         };
 
-        javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
-                null, columnas
-        ) {
+        DefaultTableModel modelo = new DefaultTableModel(null, columnas) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -50,50 +60,110 @@ public class VentanaCitas extends javax.swing.JFrame {
         };
 
         try {
-            // DAOs
-            CitaDAO citaDAO = new CitaDAO();
-            ClienteDAO clienteDAO = new ClienteDAO();
-            EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+            // 👇 USAR CONTROLADORES (no DAOs directos)
+            CitaControl citaControl = new CitaControl();
+            ClienteControl clienteControl = new ClienteControl();
+            EmpleadoControl empleadoControl = new EmpleadoControl();
 
-            // Obtener todas las citas
-            List<Cita> citas = citaDAO.listarTodos();
+            List<Cita> citas = citaControl.listarTodos();
 
             for (Cita cita : citas) {
-                // Obtener cliente por cli_id
-                Cliente cliente = clienteDAO.obtenerPorId(cita.getCliId());
+                // Obtener cliente
+                Cliente cliente = clienteControl.obtenerPorId(cita.getCliId());
                 String nombreCliente = (cliente != null)
                         ? cliente.getCliNombre() + " " + cliente.getCliApellido()
                         : "Cliente no encontrado";
 
-                // Obtener empleado por emp_id
-                Empleado empleado = empleadoDAO.obtenerPorId(cita.getEmpId());
+                // Obtener empleado
+                Empleado empleado = empleadoControl.obtenerPorId(cita.getEmpId());
                 String nombreEmpleado = (empleado != null)
                         ? empleado.getEmpNombre() + " " + empleado.getEmpApellido()
                         : "Empleado no encontrado";
 
-                // Formatear fecha (opcional: puedes usar SimpleDateFormat si quieres otro formato)
+                // Formatear fecha
                 String fecha = (cita.getCitaFechaHora() != null)
-                        ? cita.getCitaFechaHora().toString()
+                        ? new SimpleDateFormat("yyyy-MM-dd - HH:mm").format(cita.getCitaFechaHora())
                         : "Sin fecha";
-
-                // Convertir estado a texto legible
-                String estado = cita.getEstadoTexto(); // "Pendiente" o "Cancelada"
 
                 Object[] fila = {
                     cita.getCitaId(),
                     fecha,
-                    estado,
+                    cita.getEstadoTexto(),
                     nombreCliente,
                     nombreEmpleado
                 };
-
                 modelo.addRow(fila);
             }
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this,
-                    "Error al cargar las citas desde la base de datos:\n" + e.getMessage(),
-                    "Error de conexión",
+                    "Error al cargar las citas:\n" + e.getMessage(),
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+
+        jTableCitas.setModel(modelo);
+    }
+
+    private void configurarAnchoColumnas() {
+        jTableCitas.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+
+        jTableCitas.getColumnModel().getColumn(0).setPreferredWidth(50);   // ID
+        jTableCitas.getColumnModel().getColumn(1).setPreferredWidth(180);  // Fecha de cita
+        jTableCitas.getColumnModel().getColumn(2).setPreferredWidth(100);  // Estado
+        jTableCitas.getColumnModel().getColumn(3).setPreferredWidth(180);  // Cliente
+        jTableCitas.getColumnModel().getColumn(4).setPreferredWidth(180);  // Empleado asignado
+    }
+
+    private void mostrarCitasEnTabla(List<Cita> citas) {
+        String[] columnas = {
+            "ID", "Fecha de cita", "Estado", "Cliente", "Empleado asignado"
+        };
+
+        DefaultTableModel modelo = new DefaultTableModel(null, columnas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        try {
+            ClienteControl clienteControl = new ClienteControl();
+            EmpleadoControl empleadoControl = new EmpleadoControl();
+
+            for (Cita cita : citas) {
+                // Obtener cliente
+                Cliente cliente = clienteControl.obtenerPorId(cita.getCliId());
+                String nombreCliente = (cliente != null)
+                        ? cliente.getCliNombre() + " " + cliente.getCliApellido()
+                        : "Cliente no encontrado";
+
+                // Obtener empleado
+                Empleado empleado = empleadoControl.obtenerPorId(cita.getEmpId());
+                String nombreEmpleado = (empleado != null)
+                        ? empleado.getEmpNombre() + " " + empleado.getEmpApellido()
+                        : "Empleado no encontrado";
+
+                // Formatear fecha
+                String fecha = (cita.getCitaFechaHora() != null)
+                        ? new SimpleDateFormat("yyyy-MM-dd HH:mm").format(cita.getCitaFechaHora())
+                        : "Sin fecha";
+
+                Object[] fila = {
+                    cita.getCitaId(),
+                    fecha,
+                    cita.getEstadoTexto(),
+                    nombreCliente,
+                    nombreEmpleado
+                };
+                modelo.addRow(fila);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar datos relacionados:\n" + e.getMessage(),
+                    "Error",
                     JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
@@ -127,7 +197,7 @@ public class VentanaCitas extends javax.swing.JFrame {
         jButtonRestablecer = new javax.swing.JButton();
         jButtonBuscarCita = new javax.swing.JButton();
         jButtonAgendarCita = new javax.swing.JButton();
-        jButtonEliminarCita = new javax.swing.JButton();
+        jButtonCancelarCita = new javax.swing.JButton();
         jButtonEditarCita = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -170,10 +240,10 @@ public class VentanaCitas extends javax.swing.JFrame {
             }
         });
 
-        jButtonEliminarCita.setText("Cancelar Cita");
-        jButtonEliminarCita.addActionListener(new java.awt.event.ActionListener() {
+        jButtonCancelarCita.setText("Cancelar Cita");
+        jButtonCancelarCita.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEliminarCitaActionPerformed(evt);
+                jButtonCancelarCitaActionPerformed(evt);
             }
         });
 
@@ -189,15 +259,15 @@ public class VentanaCitas extends javax.swing.JFrame {
         jPanelClientesLayout.setHorizontalGroup(
             jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelClientesLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 574, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonBuscarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonAgendarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEliminarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonEditarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 38, Short.MAX_VALUE))
+                    .addComponent(jButtonBuscarCita, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonRestablecer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonAgendarCita, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonCancelarCita, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonEditarCita, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20))
         );
         jPanelClientesLayout.setVerticalGroup(
             jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -205,13 +275,13 @@ public class VentanaCitas extends javax.swing.JFrame {
             .addGroup(jPanelClientesLayout.createSequentialGroup()
                 .addGap(35, 35, 35)
                 .addComponent(jButtonRestablecer, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonBuscarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonAgendarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonEliminarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButtonCancelarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonEditarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -234,29 +304,188 @@ public class VentanaCitas extends javax.swing.JFrame {
 
     private void jButtonRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRestablecerActionPerformed
         configurarTabla();
+        configurarAnchoColumnas(); 
     }//GEN-LAST:event_jButtonRestablecerActionPerformed
 
     private void jButtonBuscarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarCitaActionPerformed
-        String criterio = javax.swing.JOptionPane.showInputDialog(
+        String criterio = JOptionPane.showInputDialog(
                 this,
                 "Ingrese el nombre, apellido o ID del cliente a buscar:",
-                "Buscar Cliente",
-                javax.swing.JOptionPane.QUESTION_MESSAGE
+                "Buscar Cita",
+                JOptionPane.QUESTION_MESSAGE
         );
+
+        if (criterio == null || criterio.trim().isEmpty()) {
+            return; // Canceló o dejó vacío
+        }
+
+        try {
+            CitaControl citaControl = new CitaControl();
+            ClienteControl clienteControl = new ClienteControl();
+
+            List<Cita> todasCitas = citaControl.listarTodos();
+            List<Cita> resultados = new ArrayList<>();
+
+            String busqueda = criterio.trim().toLowerCase();
+
+            for (Cita cita : todasCitas) {
+                // Opción 1: si ya tienes nombre/apellido en Cita
+                // (no es tu caso, así que usamos Opción 2)
+
+                // Opción 2: obtener cliente por cliId
+                Cliente cliente = clienteControl.obtenerPorId(cita.getCliId());
+                if (cliente != null) {
+                    boolean coincide = false;
+
+                    // Buscar por ID (si el criterio es numérico)
+                    if (busqueda.matches("\\d+")) {
+                        int idBuscado = Integer.parseInt(busqueda);
+                        if (cliente.getCliId() == idBuscado) {
+                            coincide = true;
+                        }
+                    }
+
+                    // Buscar por nombre o apellido
+                    if (!coincide) {
+                        if (cliente.getCliNombre().toLowerCase().contains(busqueda)
+                                || cliente.getCliApellido().toLowerCase().contains(busqueda)) {
+                            coincide = true;
+                        }
+                    }
+
+                    if (coincide) {
+                        resultados.add(cita);
+                    }
+                }
+            }
+
+            if (resultados.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "No se encontraron citas para el cliente: \"" + criterio.trim() + "\"",
+                        "Sin resultados",
+                        JOptionPane.INFORMATION_MESSAGE);
+                // Volver a mostrar todas las citas
+                configurarTabla();
+            } else {
+                // Mostrar SOLO los resultados de la búsqueda
+                mostrarCitasEnTabla(resultados);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al buscar citas:\n" + e.getMessage(),
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_jButtonBuscarCitaActionPerformed
 
     private void jButtonAgendarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgendarCitaActionPerformed
-        FormularioAgendacionCitas formulario = new FormularioAgendacionCitas();
+        FormularioAgendacionCitas formulario = new FormularioAgendacionCitas(this);
         formulario.setVisible(true);
     }//GEN-LAST:event_jButtonAgendarCitaActionPerformed
 
-    private void jButtonEliminarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarCitaActionPerformed
+    private void jButtonCancelarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarCitaActionPerformed
+        // Verificar selección
+        int filaSeleccionada = jTableCitas.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Seleccione una cita de la tabla para cancelar.",
+                    "Ninguna selección",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-    }//GEN-LAST:event_jButtonEliminarCitaActionPerformed
+        // Obtener datos de la fila seleccionada
+        int citaId = (int) jTableCitas.getValueAt(filaSeleccionada, 0);
+        String estadoActual = (String) jTableCitas.getValueAt(filaSeleccionada, 2);
+
+        // Verificar si ya está cancelada
+        if ("Cancelada".equals(estadoActual)) {
+            JOptionPane.showMessageDialog(this,
+                    "La cita ya está cancelada.",
+                    "Acción no permitida",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Confirmar cancelación
+        int confirmacion = JOptionPane.showConfirmDialog(this,
+                "¿Está seguro de cancelar la cita con ID " + citaId + "?",
+                "Confirmar cancelación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (confirmacion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            // Obtener la cita completa
+            CitaControl citaControl = new CitaControl();
+            Cita cita = citaControl.obtenerPorId(citaId);
+
+            if (cita == null) {
+                JOptionPane.showMessageDialog(this,
+                        "No se encontró la cita con ID " + citaId,
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Cambiar solo el estado a 'C' (Cancelada)
+            cita.setCitaEstado('C');
+            citaControl.actualizar(cita);
+
+            // Mostrar mensaje y recargar tabla
+            JOptionPane.showMessageDialog(this,
+                    "Cita cancelada exitosamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            configurarTabla(); // Actualiza la tabla para mostrar el nuevo estado
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error al cancelar la cita:\n" + e.getMessage(),
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonCancelarCitaActionPerformed
 
     private void jButtonEditarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarCitaActionPerformed
-        FormularioAgendacionCitas formulario = new FormularioAgendacionCitas();
-        formulario.setVisible(true);
+        int filaSeleccionada = jTableCitas.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Seleccione una cita de la tabla para editar.",
+                    "Ninguna selección",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            int citaId = (int) jTableCitas.getValueAt(filaSeleccionada, 0);
+            CitaControl citaControl = new CitaControl();
+            Cita cita = citaControl.obtenerPorId(citaId);
+
+            if (cita == null) {
+                JOptionPane.showMessageDialog(this,
+                        "No se encontró la cita seleccionada.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            FormularioAgendacionCitas formulario = new FormularioAgendacionCitas(this, cita);
+            formulario.setVisible(true);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar la cita para edición:\n" + e.getMessage(),
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButtonEditarCitaActionPerformed
 
     /**
@@ -266,8 +495,8 @@ public class VentanaCitas extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAgendarCita;
     private javax.swing.JButton jButtonBuscarCita;
+    private javax.swing.JButton jButtonCancelarCita;
     private javax.swing.JButton jButtonEditarCita;
-    private javax.swing.JButton jButtonEliminarCita;
     private javax.swing.JButton jButtonRestablecer;
     private javax.swing.JPanel jPanelClientes;
     private javax.swing.JScrollPane jScrollPane1;

@@ -4,22 +4,18 @@
  */
 package modelos;
 
-/**
- *
- * @author USUARO_PC
- */
-import java.util.Date;
+import java.sql.Timestamp; // ← Import correcto
 
 public class Cita {
     private int citaId;
-    private Date citaFechaHora;
+    private Timestamp citaFechaHora; // ← Tipo correcto
     private char citaEstado; // 'P' = Pendiente, 'C' = Cancelada
     private int cliId;       // FK a Cliente
     private int empId;       // FK a Empleado
 
     public Cita() {}
 
-    public Cita(int citaId, Date citaFechaHora, char citaEstado, int cliId, int empId) {
+    public Cita(int citaId, Timestamp citaFechaHora, char citaEstado, int cliId, int empId) {
         this.citaId = citaId;
         this.citaFechaHora = citaFechaHora;
         this.citaEstado = citaEstado;
@@ -31,8 +27,8 @@ public class Cita {
     public int getCitaId() { return citaId; }
     public void setCitaId(int citaId) { this.citaId = citaId; }
 
-    public Date getCitaFechaHora() { return citaFechaHora; }
-    public void setCitaFechaHora(Date citaFechaHora) { this.citaFechaHora = citaFechaHora; }
+    public Timestamp getCitaFechaHora() { return citaFechaHora; } // ← Devuelve Timestamp
+    public void setCitaFechaHora(Timestamp citaFechaHora) { this.citaFechaHora = citaFechaHora; }
 
     public char getCitaEstado() { return citaEstado; }
     public void setCitaEstado(char citaEstado) { this.citaEstado = citaEstado; }

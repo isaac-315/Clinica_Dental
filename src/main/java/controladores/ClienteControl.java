@@ -36,4 +36,8 @@ public class ClienteControl {
     public void actualizar(Cliente cliente) throws SQLException {
         clienteDAO.actualizar(cliente);
     }
+
+    public Cliente obtenerPorCedula(String cedula) throws SQLException {
+        return clienteDAO.obtenerPorCedula(cedula);
+    }
 }

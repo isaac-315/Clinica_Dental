@@ -4,23 +4,114 @@
  */
 package vistas;
 
-
+import java.sql.SQLException;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import java.util.regex.Pattern;
+import modelos.Empleado;
+import modelos.EmpleadoDAO;
 
 public class FormularioRegistroEmpleado extends javax.swing.JDialog {
 
-    private VentanaPrincipal ventanaAnterior;
-
-    // ✅ Constructor por defecto que usa un propietario nulo (funciona, pero mejor con owner)
-    public FormularioRegistroEmpleado() {
-        super(); // Llama al constructor de JDialog sin propietario
+    public FormularioRegistroEmpleado(VentanaEmpleados owner) {
+        super(owner); // Establece la ventana padre
         initComponents();
-        setModal(true); // Opcional: hace que la ventana sea modal (bloquea la de atrás)
+        setModal(true);
         setLocationRelativeTo(null);
     }
-    
+
+    // Dentro de FormularioRegistroEmpleado.java
+    private boolean validarCampos() {
+        // 1. Cédula
+        String cedula = jTextFieldCedula.getText().trim();
+        if (cedula.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "La cédula es obligatoria.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!validarCedulaEcuatoriana(cedula)) {
+            JOptionPane.showMessageDialog(this, "La cédula no es válida según el formato ecuatoriano.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // 2. Nombres
+        String nombres = jTextFieldNombres.getText().trim();
+        if (nombres.isEmpty() || !nombres.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]{2,50}$")) {
+            JOptionPane.showMessageDialog(this, "Los nombres deben contener solo letras y espacios (mínimo 2 caracteres).", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // 3. Apellidos
+        String apellidos = jTextFieldApellidos.getText().trim();
+        if (apellidos.isEmpty() || !apellidos.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]{2,50}$")) {
+            JOptionPane.showMessageDialog(this, "Los apellidos deben contener solo letras y espacios (mínimo 2 caracteres).", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // 4. Dirección
+        String direccion = jTextFieldDireccion.getText().trim();
+        if (direccion.isEmpty() || direccion.length() < 5 || !direccion.matches("^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\\s.,#-]{5,150}$")) {
+            JOptionPane.showMessageDialog(this, "La dirección debe tener al menos 5 caracteres y puede incluir letras, números y símbolos como . , # -", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // 5. Teléfono Convencional (7 dígitos)
+        String telConv = jTextFieldTelefonoCo.getText().trim();
+        if (telConv.isEmpty() || !telConv.matches("\\d{7}")) {
+            JOptionPane.showMessageDialog(this, "El teléfono convencional debe tener exactamente 7 dígitos numéricos.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // 6. Teléfono Celular (10 dígitos)
+        String telCel = jTextFieldTelefonoCe.getText().trim();
+        if (telCel.isEmpty() || !telCel.matches("\\d{10}")) {
+            JOptionPane.showMessageDialog(this, "El teléfono celular debe tener exactamente 10 dígitos numéricos.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // 7. Correo electrónico
+        String correo = jTextFieldCorreo.getText().trim();
+        if (correo.isEmpty() || !correo.matches("^[A-Za-z0-9+_.-]+@([A-Za-z0-9.-]+\\.[A-Za-z]{2,})$")) {
+            JOptionPane.showMessageDialog(this, "El correo electrónico no tiene un formato válido.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true; // Todos los campos son válidos
+    }
+
+    private boolean validarCedulaEcuatoriana(String cedula) {
+        if (cedula == null || cedula.length() != 10) {
+            return false;
+        }
+
+        for (char c : cedula.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+
+        int provincia = Integer.parseInt(cedula.substring(0, 2));
+        if (provincia < 1 || (provincia > 24 && provincia != 30)) {
+            return false;
+        }
+
+        int[] coeficientes = {2, 1, 2, 1, 2, 1, 2, 1, 2};
+        int suma = 0;
+
+        for (int i = 0; i < 9; i++) {
+            int digito = Character.getNumericValue(cedula.charAt(i));
+            int producto = digito * coeficientes[i];
+            if (producto >= 10) {
+                producto -= 9;
+            }
+            suma += producto;
+        }
+
+        int digitoVerificadorCalculado = (suma % 10 == 0) ? 0 : (10 - (suma % 10));
+        int digitoVerificadorReal = Character.getNumericValue(cedula.charAt(9));
+
+        return digitoVerificadorCalculado == digitoVerificadorReal;
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -29,28 +120,22 @@ public class FormularioRegistroEmpleado extends javax.swing.JDialog {
         jLabel20 = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        jTextFieldID = new javax.swing.JTextField();
         jTextFieldCedula = new javax.swing.JTextField();
         jTextFieldNombres = new javax.swing.JTextField();
         jTextFieldApellidos = new javax.swing.JTextField();
         jLabelFormularioClientes = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jButtonAgregarCliente = new javax.swing.JButton();
+        jButtonAgregarEmpleado = new javax.swing.JButton();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
-        jLabel23 = new javax.swing.JLabel();
         jTextFieldDireccion = new javax.swing.JTextField();
         jTextFieldTelefonoCo = new javax.swing.JTextField();
         jTextFieldTelefonoCe = new javax.swing.JTextField();
         jTextFieldCorreo = new javax.swing.JTextField();
-        jTextFieldEstado = new javax.swing.JTextField();
-        jLabel24 = new javax.swing.JLabel();
-        jComboBoxCargos = new javax.swing.JComboBox<>();
 
         jTextField4.setText("jTextField1");
 
@@ -73,19 +158,16 @@ public class FormularioRegistroEmpleado extends javax.swing.JDialog {
         jLabelFormularioClientes.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         jLabelFormularioClientes.setText("Formulario de Empleados");
 
-        jLabel1.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        jLabel1.setText("ID");
-
         jLabel5.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jLabel5.setText("Cédula");
 
         jLabel6.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jLabel6.setText("Nombres");
 
-        jButtonAgregarCliente.setText("Registrar");
-        jButtonAgregarCliente.addActionListener(new java.awt.event.ActionListener() {
+        jButtonAgregarEmpleado.setText("Registrar");
+        jButtonAgregarEmpleado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAgregarClienteActionPerformed(evt);
+                jButtonAgregarEmpleadoActionPerformed(evt);
             }
         });
 
@@ -104,14 +186,6 @@ public class FormularioRegistroEmpleado extends javax.swing.JDialog {
         jLabel21.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jLabel21.setText("Correo electrónico");
 
-        jLabel23.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        jLabel23.setText("Estado");
-
-        jLabel24.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        jLabel24.setText("Cargos");
-
-        jComboBoxCargos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -119,41 +193,32 @@ public class FormularioRegistroEmpleado extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(189, 189, 189)
                 .addComponent(jLabelFormularioClientes)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 202, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(47, 47, 47)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 147, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(jTextFieldID, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(94, 94, 94))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jTextFieldCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jTextFieldNombres, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jTextFieldApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap()))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextFieldCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldNombres, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextFieldApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jTextFieldDireccion, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
-                            .addComponent(jButtonAgregarCliente, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                            .addComponent(jButtonAgregarEmpleado, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
                             .addComponent(jTextFieldTelefonoCo, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
                             .addComponent(jTextFieldTelefonoCe, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
-                            .addComponent(jTextFieldCorreo, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
-                            .addComponent(jTextFieldEstado, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
-                            .addComponent(jComboBoxCargos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jTextFieldCorreo, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
                         .addGap(94, 94, 94))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -161,11 +226,7 @@ public class FormularioRegistroEmpleado extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelFormularioClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(46, 46, 46)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldCedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -193,17 +254,9 @@ public class FormularioRegistroEmpleado extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextFieldCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(14, 14, 14)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBoxCargos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
-                .addComponent(jButtonAgregarCliente)
-                .addGap(26, 26, 26))
+                .addGap(43, 43, 43)
+                .addComponent(jButtonAgregarEmpleado)
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -216,7 +269,9 @@ public class FormularioRegistroEmpleado extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -226,15 +281,53 @@ public class FormularioRegistroEmpleado extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldNombresActionPerformed
 
-    private void jButtonAgregarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarClienteActionPerformed
-        
-    }//GEN-LAST:event_jButtonAgregarClienteActionPerformed
+    private void jButtonAgregarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarEmpleadoActionPerformed
+        try {
+            if (!validarCampos()) {
+                return;
+            }
+
+            Empleado emp = new Empleado(
+                    jTextFieldCedula.getText().trim(),
+                    jTextFieldNombres.getText().trim(),
+                    jTextFieldApellidos.getText().trim(),
+                    jTextFieldDireccion.getText().trim(),
+                    jTextFieldTelefonoCo.getText().trim(),
+                    jTextFieldTelefonoCe.getText().trim(),
+                    jTextFieldCorreo.getText().trim()
+            );
+
+            EmpleadoDAO dao = new EmpleadoDAO();
+            dao.insertar(emp);
+
+            JOptionPane.showMessageDialog(this, "Empleado registrado exitosamente.");
+
+            // 👇 NOTIFICAR A LA VENTANA PADRE PARA QUE SE REFRESQUE
+             if (getOwner() instanceof VentanaEmpleados) {
+                ((VentanaEmpleados) getOwner()).refrescarTabla();
+            }
+
+
+            this.dispose();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error de base de datos:\n" + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error inesperado:\n" + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonAgregarEmpleadoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAgregarCliente;
-    private javax.swing.JComboBox<String> jComboBoxCargos;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton jButtonAgregarEmpleado;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
@@ -242,8 +335,6 @@ public class FormularioRegistroEmpleado extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabelFormularioClientes;
@@ -253,8 +344,6 @@ public class FormularioRegistroEmpleado extends javax.swing.JDialog {
     private javax.swing.JTextField jTextFieldCedula;
     private javax.swing.JTextField jTextFieldCorreo;
     private javax.swing.JTextField jTextFieldDireccion;
-    private javax.swing.JTextField jTextFieldEstado;
-    private javax.swing.JTextField jTextFieldID;
     private javax.swing.JTextField jTextFieldNombres;
     private javax.swing.JTextField jTextFieldTelefonoCe;
     private javax.swing.JTextField jTextFieldTelefonoCo;

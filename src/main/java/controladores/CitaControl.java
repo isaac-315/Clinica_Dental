@@ -1,31 +1,30 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controladores;
 
-import java.sql.SQLException;
-import java.util.List;
 import modelos.Cita;
 import modelos.CitaDAO;
+import java.sql.SQLException;
+import java.util.List;
 
-/**
- *
- * @author USUARO_PC
- */
 public class CitaControl {
-
-    private final CitaDAO citaDAO = new CitaDAO();
-
-    public List<Cita> listarTodos() throws SQLException {
-        return citaDAO.listarTodos();
-    }
-
-    public Cita obtenerPorId(int id) throws SQLException {
-        return citaDAO.obtenerPorId(id);
-    }
+    private CitaDAO citaDAO = new CitaDAO();
 
     public void guardar(Cita cita) throws SQLException {
         citaDAO.insertar(cita);
+    }
+
+    public void actualizar(Cita cita) throws SQLException {
+        citaDAO.actualizar(cita);
+    }
+
+    public void eliminar(int citaId) throws SQLException {
+        citaDAO.eliminar(citaId);
+    }
+
+    public Cita obtenerPorId(int citaId) throws SQLException {
+        return citaDAO.obtenerPorId(citaId);
+    }
+
+    public List<Cita> listarTodos() throws SQLException {
+        return citaDAO.listarTodos();
     }
 }
