@@ -50,9 +50,11 @@ public class VentanaServicios extends javax.swing.JFrame {
             List<Servicio> servicios = servicioDAO.listarTodos();
 
             for (Servicio s : servicios) {
-                // Formatear precio e IVA a 2 decimales como texto
+                // Formatear precio a 2 decimales
                 String precio = String.format("%.2f", s.getSerPrecio());
-                String iva = String.format("%.2f", s.getSerIva());
+
+                // Convertir IVA a texto legible
+                String iva = (s.getSerIva() == 'S') ? "Sí" : "No";
 
                 // Convertir estado a texto legible
                 String estado = s.getEstadoTexto(); // "Activo" o "Inactivo"
@@ -77,6 +79,10 @@ public class VentanaServicios extends javax.swing.JFrame {
         }
 
         jTableServicios.setModel(modelo);
+    }
+
+    public void refrescarTabla() {
+        configurarTabla();
     }
 
     private void configurarCierre() {
@@ -209,7 +215,7 @@ public class VentanaServicios extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRestablecerActionPerformed
-
+        configurarTabla();
     }//GEN-LAST:event_jButtonRestablecerActionPerformed
 
     private void jButtonBuscarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarServicioActionPerformed
@@ -217,15 +223,87 @@ public class VentanaServicios extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonBuscarServicioActionPerformed
 
     private void jButtonIngresarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIngresarServicioActionPerformed
-        // TODO add your handling code here:
+        FormularioRegistroServicios formulario = new FormularioRegistroServicios(this);
+        formulario.setVisible(true);
     }//GEN-LAST:event_jButtonIngresarServicioActionPerformed
 
     private void jButtonEliminarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarServicioActionPerformed
-        // TODO add your handling code here:
+        int filaSeleccionada = jTableServicios.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Seleccione un servicio de la tabla para eliminar.",
+                    "Ninguna selección",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int serId = (int) jTableServicios.getValueAt(filaSeleccionada, 0);
+        String nombreServicio = (String) jTableServicios.getValueAt(filaSeleccionada, 1);
+
+        int confirmacion = JOptionPane.showConfirmDialog(this,
+                "¿Está seguro de eliminar el servicio '" + nombreServicio + "'?\n"
+                + "Esta acción no se puede deshacer.",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (confirmacion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            ServicioDAO servicioDAO = new ServicioDAO();
+            servicioDAO.eliminar(serId);
+
+            JOptionPane.showMessageDialog(this,
+                    "Servicio eliminado exitosamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            refrescarTabla();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error al eliminar el servicio:\n" + e.getMessage(),
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButtonEliminarServicioActionPerformed
 
     private void jButtonEditarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarServicioActionPerformed
-        // TODO add your handling code here:
+        int filaSeleccionada = jTableServicios.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Seleccione un servicio de la tabla para editar.",
+                    "Ninguna selección",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            int serId = (int) jTableServicios.getValueAt(filaSeleccionada, 0);
+            ServicioDAO servicioDAO = new ServicioDAO();
+            modelos.Servicio servicio = servicioDAO.obtenerPorId(serId);
+
+            if (servicio == null) {
+                JOptionPane.showMessageDialog(this,
+                        "No se encontró el servicio seleccionado.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            FormularioRegistroServicios formulario = new FormularioRegistroServicios(this, servicio);
+            formulario.setVisible(true);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar el servicio para edición:\n" + e.getMessage(),
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButtonEditarServicioActionPerformed
 
     /**

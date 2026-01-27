@@ -5,8 +5,10 @@
 package vistas;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import modelos.Empleado;
 import modelos.EmpleadoDAO;
 import modelos.Usuario;
@@ -69,6 +71,44 @@ public class VentanaUsuarios extends javax.swing.JFrame {
                     "Error al cargar los usuarios desde la base de datos:\n" + e.getMessage(),
                     "Error de conexión",
                     JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+
+        jTableUsuarios.setModel(modelo);
+    }
+
+    public void refrescarTabla() {
+        configurarTabla();
+    }
+
+    private void mostrarResultadosBusqueda(List<Usuario> usuarios) {
+        String[] columnas = {"ID", "Usuario", "Empleado"};
+
+        DefaultTableModel modelo = new DefaultTableModel(null, columnas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        try {
+            EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+
+            for (Usuario u : usuarios) {
+                Empleado emp = empleadoDAO.obtenerPorId(u.getEmpId());
+                String nombreEmpleado = (emp != null)
+                        ? emp.getEmpNombre() + " " + emp.getEmpApellido()
+                        : "Empleado no encontrado";
+
+                Object[] fila = {
+                    u.getUsuId(),
+                    u.getUsuUsuario(),
+                    nombreEmpleado
+                };
+                modelo.addRow(fila);
+            }
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -205,34 +245,153 @@ public class VentanaUsuarios extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRestablecerActionPerformed
-
+        configurarTabla();
     }//GEN-LAST:event_jButtonRestablecerActionPerformed
 
     private void jButtonBuscarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarUsuarioActionPerformed
-        String criterio = javax.swing.JOptionPane.showInputDialog(
+        String criterio = JOptionPane.showInputDialog(
                 this,
                 "Ingrese el nombre de usuario o nombre del empleado:",
                 "Buscar Usuario",
-                javax.swing.JOptionPane.QUESTION_MESSAGE
+                JOptionPane.QUESTION_MESSAGE
         );
+
+        if (criterio == null || criterio.trim().isEmpty()) {
+            return; // Canceló o dejó vacío
+        }
+
+        try {
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+            List<Usuario> todosUsuarios = usuarioDAO.listarTodos();
+            List<Usuario> resultados = new ArrayList<>();
+
+            String busqueda = criterio.trim().toLowerCase();
+
+            for (Usuario u : todosUsuarios) {
+                boolean coincide = false;
+
+                // Buscar por nombre de usuario
+                if (u.getUsuUsuario().toLowerCase().contains(busqueda)) {
+                    coincide = true;
+                }
+
+                // Buscar por nombre de empleado
+                if (!coincide) {
+                    Empleado emp = empleadoDAO.obtenerPorId(u.getEmpId());
+                    if (emp != null) {
+                        String nombreCompleto = (emp.getEmpNombre() + " " + emp.getEmpApellido()).toLowerCase();
+                        if (nombreCompleto.contains(busqueda)) {
+                            coincide = true;
+                        }
+                    }
+                }
+
+                if (coincide) {
+                    resultados.add(u);
+                }
+            }
+
+            if (resultados.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "No se encontraron usuarios para: \"" + criterio.trim() + "\"",
+                        "Sin resultados",
+                        JOptionPane.INFORMATION_MESSAGE);
+                configurarTabla(); // Volver a mostrar todos
+            } else {
+                mostrarResultadosBusqueda(resultados);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error al buscar usuarios:\n" + e.getMessage(),
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButtonBuscarUsuarioActionPerformed
 
     private void jButtonCrearUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCrearUsuarioActionPerformed
-        FormularioCreacionUsuarios formulario = new FormularioCreacionUsuarios();
+        FormularioCreacionUsuarios formulario = new FormularioCreacionUsuarios(this);
         formulario.setVisible(true);
     }//GEN-LAST:event_jButtonCrearUsuarioActionPerformed
 
     private void jButtonEliminarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarUsuarioActionPerformed
-        String criterio = JOptionPane.showInputDialog(
-                this,
-                "Ingrese el nombre de usuario o ID del usuario a eliminar:",
-                "Eliminar Usuario",
-                JOptionPane.QUESTION_MESSAGE
-        );
+        int filaSeleccionada = jTableUsuarios.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Seleccione un usuario de la tabla para eliminar.",
+                    "Ninguna selección",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int usuId = (int) jTableUsuarios.getValueAt(filaSeleccionada, 0);
+        String nombreUsuario = (String) jTableUsuarios.getValueAt(filaSeleccionada, 1);
+
+        int confirmacion = JOptionPane.showConfirmDialog(this,
+                "¿Está seguro de eliminar el usuario '" + nombreUsuario + "'?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (confirmacion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            usuarioDAO.eliminar(usuId);
+
+            JOptionPane.showMessageDialog(this,
+                    "Usuario eliminado exitosamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            refrescarTabla();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error al eliminar el usuario:\n" + e.getMessage(),
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButtonEliminarUsuarioActionPerformed
 
     private void jButtonEditarEditarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarEditarUsuarioActionPerformed
-       
+        int filaSeleccionada = jTableUsuarios.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Seleccione un usuario de la tabla para editar.",
+                    "Ninguna selección",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            int usuId = (int) jTableUsuarios.getValueAt(filaSeleccionada, 0);
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            modelos.Usuario usuario = usuarioDAO.obtenerPorId(usuId);
+
+            if (usuario == null) {
+                JOptionPane.showMessageDialog(this,
+                        "No se encontró el usuario seleccionado.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            FormularioCreacionUsuarios formulario = new FormularioCreacionUsuarios(this, usuario);
+            formulario.setVisible(true);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar el usuario para edición:\n" + e.getMessage(),
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButtonEditarEditarUsuarioActionPerformed
 
     /**

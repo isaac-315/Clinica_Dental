@@ -28,4 +28,8 @@ public class ServicioControl {
     public void guardar(Servicio servicio) throws SQLException {
         servicioDAO.insertar(servicio);
     }
+    
+    public void actualizar(Servicio servicio) throws SQLException {
+    servicioDAO.actualizar(servicio);
+}
 }

@@ -28,4 +28,14 @@ public class UsuarioControl {
     public void guardar(Usuario usuario) throws SQLException {
         usuarioDAO.insertar(usuario);
     }
+
+    // En controladores.UsuarioControl.java
+    public boolean existeUsuario(String usuario) throws SQLException {
+        return usuarioDAO.existeUsuario(usuario);
+    }
+
+    // En controladores.UsuarioControl.java
+    public void actualizar(Usuario usuario) throws SQLException {
+        usuarioDAO.actualizar(usuario);
+    }
 }

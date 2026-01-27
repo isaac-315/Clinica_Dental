@@ -5,8 +5,10 @@
 package vistas;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import modelos.Empleado;
 import modelos.EmpleadoDAO;
 import modelos.Usuario;
@@ -92,6 +94,37 @@ public class VentanaEmpleados extends javax.swing.JFrame {
         // Asignar el modelo a la tabla
         jTableEmpleados.setModel(modelo);
         System.out.println("✅ Tabla actualizada con el modelo");
+    }
+
+    private void mostrarResultadosBusqueda(List<Empleado> empleados) {
+        String[] columnas = {
+            "ID", "Cédula", "Nombres", "Apellidos", "Dirección",
+            "Teléfono Convencional", "Teléfono Celular", "Correo Electrónico"
+        };
+
+        DefaultTableModel modelo = new DefaultTableModel(null, columnas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        for (Empleado emp : empleados) {
+            Object[] fila = {
+                emp.getEmpId(),
+                emp.getEmpCedula(),
+                emp.getEmpNombre(),
+                emp.getEmpApellido(),
+                emp.getEmpDireccion(),
+                emp.getEmpTelefonoConvencional(),
+                emp.getEmpTelefonoCelular(),
+                emp.getEmpCorreoElectronico()
+            };
+            modelo.addRow(fila);
+        }
+
+        jTableEmpleados.setModel(modelo);
+        configurarAnchoColumnas();
     }
 
     private void configurarAnchoColumnas() {
@@ -248,12 +281,65 @@ public class VentanaEmpleados extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonRestablecerActionPerformed
 
     private void jButtonBuscarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarEmpleadoActionPerformed
-        String criterio = javax.swing.JOptionPane.showInputDialog(
+        String criterio = JOptionPane.showInputDialog(
                 this,
-                "Ingrese el nombre, apellido o id del empleado:",
-                "Buscar Empleado", // ← ¡Corregido el título!
-                javax.swing.JOptionPane.QUESTION_MESSAGE
+                "Ingrese el nombre, apellido o ID del empleado:",
+                "Buscar Empleado",
+                JOptionPane.QUESTION_MESSAGE
         );
+
+        if (criterio == null || criterio.trim().isEmpty()) {
+            return; // Canceló o dejó vacío
+        }
+
+        try {
+            EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+            List<Empleado> todosEmpleados = empleadoDAO.listarTodos();
+            List<Empleado> resultados = new ArrayList<>();
+
+            String busqueda = criterio.trim().toLowerCase();
+
+            for (Empleado emp : todosEmpleados) {
+                boolean coincide = false;
+
+                // Buscar por ID (si es numérico)
+                if (busqueda.matches("\\d+")) {
+                    int idBuscado = Integer.parseInt(busqueda);
+                    if (emp.getEmpId() == idBuscado) {
+                        coincide = true;
+                    }
+                }
+
+                // Buscar por nombre o apellido
+                if (!coincide) {
+                    if (emp.getEmpNombre().toLowerCase().contains(busqueda)
+                            || emp.getEmpApellido().toLowerCase().contains(busqueda)) {
+                        coincide = true;
+                    }
+                }
+
+                if (coincide) {
+                    resultados.add(emp);
+                }
+            }
+
+            if (resultados.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "No se encontraron empleados para: \"" + criterio.trim() + "\"",
+                        "Sin resultados",
+                        JOptionPane.INFORMATION_MESSAGE);
+                cargarDatosEnTabla(); // Volver a mostrar todos
+            } else {
+                mostrarResultadosBusqueda(resultados); // Mostrar solo resultados
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error al buscar empleados:\n" + e.getMessage(),
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE);
+        }
 
 
     }//GEN-LAST:event_jButtonBuscarEmpleadoActionPerformed
@@ -264,7 +350,46 @@ public class VentanaEmpleados extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonInsertarEmpleadoActionPerformed
 
     private void jButtonEliminarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarEmpleadoActionPerformed
+        int filaSeleccionada = jTableEmpleados.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Seleccione un empleado de la tabla para eliminar.",
+                    "Ninguna selección",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
+        int empId = (int) jTableEmpleados.getValueAt(filaSeleccionada, 0);
+        String cedula = (String) jTableEmpleados.getValueAt(filaSeleccionada, 1);
+
+        int confirmacion = JOptionPane.showConfirmDialog(this,
+                "¿Está seguro de eliminar al empleado con cédula " + cedula + "?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (confirmacion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try {
+            EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+            empleadoDAO.eliminar(empId);
+
+            refrescarTabla(); // Actualiza la tabla
+
+            JOptionPane.showMessageDialog(this,
+                    "Empleado eliminado exitosamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error al eliminar el empleado:\n" + e.getMessage(),
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButtonEliminarEmpleadoActionPerformed
 
     private void jButtonEditarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarEmpleadoActionPerformed

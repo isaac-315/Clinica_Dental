@@ -70,7 +70,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButtonClientesActionPerformed(evt);
             }
         });
-        background.add(jButtonClientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 70, 190, 40));
+        background.add(jButtonClientes, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 190, 190, 40));
 
         jButtonCitas.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jButtonCitas.setText("Citas");
@@ -80,7 +80,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButtonCitasActionPerformed(evt);
             }
         });
-        background.add(jButtonCitas, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 190, 190, 40));
+        background.add(jButtonCitas, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 250, 190, 40));
 
         jButtonEmpleados.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jButtonEmpleados.setText("Empleados");
@@ -90,7 +90,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButtonEmpleadosActionPerformed(evt);
             }
         });
-        background.add(jButtonEmpleados, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 250, 190, 40));
+        background.add(jButtonEmpleados, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 70, 190, 40));
 
         jButtonFacturacion.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jButtonFacturacion.setText("Facturación");

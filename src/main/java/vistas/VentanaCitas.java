@@ -32,7 +32,7 @@ public class VentanaCitas extends javax.swing.JFrame {
         this.ventanaPrincipal = ventanaPrincipal;
         initComponents();
         configurarTabla();
-        configurarAnchoColumnas(); 
+        configurarAnchoColumnas();
         configurarCierre();
         setLocationRelativeTo(null);
         setResizable(false);
@@ -40,7 +40,7 @@ public class VentanaCitas extends javax.swing.JFrame {
 
     public void refrescarTabla() {
         configurarTabla();
-        configurarAnchoColumnas(); 
+        configurarAnchoColumnas();
     }
 
     private void configurarTabla() {
@@ -304,7 +304,7 @@ public class VentanaCitas extends javax.swing.JFrame {
 
     private void jButtonRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRestablecerActionPerformed
         configurarTabla();
-        configurarAnchoColumnas(); 
+        configurarAnchoColumnas();
     }//GEN-LAST:event_jButtonRestablecerActionPerformed
 
     private void jButtonBuscarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarCitaActionPerformed
@@ -442,7 +442,8 @@ public class VentanaCitas extends javax.swing.JFrame {
                     "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
 
-            configurarTabla(); // Actualiza la tabla para mostrar el nuevo estado
+            configurarTabla(); // Actualiza los datos
+            configurarAnchoColumnas(); // ← AÑADE ESTA LÍNEA
 
         } catch (SQLException e) {
             e.printStackTrace();
