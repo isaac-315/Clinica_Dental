@@ -4,6 +4,8 @@
  */
 package vistas;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author USUARO_PC
@@ -168,10 +170,42 @@ public class VentanaLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_jPasswordContrasenaActionPerformed
 
     private void jButtonIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIniciarSesionActionPerformed
-        VentanaPrincipal principal = new VentanaPrincipal(this); // pasamos el login
-        principal.setVisible(true);
-        this.setVisible(false); // solo ocultamos
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        try {
+            String usuario = jTextFieldNombreUsuario.getText().trim();
+            String password = new String(jPasswordContrasena.getPassword()).trim();
+
+            if (usuario.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "Usuario y contraseña son obligatorios",
+                        "Error",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // HASH de la contraseña ingresada
+            String hash = utilidades.PasswordUtil.hashPassword(password);
+
+            modelos.UsuarioDAO dao = new modelos.UsuarioDAO();
+            modelos.Usuario u = dao.autenticar(usuario, hash);
+
+            if (u != null) {
+                VentanaPrincipal principal = new VentanaPrincipal(this);
+                principal.setVisible(true);
+                this.setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Usuario o contraseña incorrectos",
+                        "Acceso denegado",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error al iniciar sesión",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButtonIniciarSesionActionPerformed
 
     /**

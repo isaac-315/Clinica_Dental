@@ -38,4 +38,6 @@ public class UsuarioControl {
     public void actualizar(Usuario usuario) throws SQLException {
         usuarioDAO.actualizar(usuario);
     }
+    
+  
 }

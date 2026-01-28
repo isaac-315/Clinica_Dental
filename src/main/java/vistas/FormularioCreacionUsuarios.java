@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import java.util.regex.Pattern;
+import utilidades.PasswordUtil;
 
 public class FormularioCreacionUsuarios extends javax.swing.JDialog {
 
@@ -291,7 +292,9 @@ public class FormularioCreacionUsuarios extends javax.swing.JDialog {
 
                 // Solo actualizar contraseña si se proporcionó una nueva
                 if (!contraseña.isEmpty()) {
-                    usuarioExistente.setUsuContrasena(contraseña);
+                    String hash = PasswordUtil.hashPassword(contraseña);
+                    usuarioExistente.setUsuContrasena(hash);
+
                 }
 
                 usuarioControl.actualizar(usuarioExistente);
@@ -299,13 +302,16 @@ public class FormularioCreacionUsuarios extends javax.swing.JDialog {
 
             } else {
                 // Modo CREACIÓN
+                String hash = PasswordUtil.hashPassword(contraseña);
+
                 modelos.Usuario usuarioObj = new modelos.Usuario(
                         0,
                         usuario,
-                        contraseña,
+                        hash,
                         tipoUsuario,
                         empleado.getEmpId()
                 );
+
                 usuarioControl.guardar(usuarioObj);
                 JOptionPane.showMessageDialog(this, "Usuario creado exitosamente.");
             }

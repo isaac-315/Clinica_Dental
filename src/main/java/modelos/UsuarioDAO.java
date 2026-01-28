@@ -106,4 +106,18 @@ public class UsuarioDAO {
             stmt.executeUpdate();
         }
     }
+
+    public Usuario autenticar(String usuario, String contrasenaHash) throws SQLException {
+        String sql = "SELECT * FROM DEN_USUARIOS WHERE usu_usuario = ? AND usu_contrasena = ?";
+        try (Connection conn = ConexionDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, usuario);
+            stmt.setString(2, contrasenaHash);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapearResultSet(rs);
+                }
+            }
+        }
+        return null;
+    }
 }
