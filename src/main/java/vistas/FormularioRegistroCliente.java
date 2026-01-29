@@ -56,7 +56,7 @@ public class FormularioRegistroCliente extends javax.swing.JDialog {
             jTextFieldCedula.setEditable(false);
             jTextFieldCedula.setFocusable(false);
             jTextFieldCedula.setEnabled(false);
-            
+
             jTextFieldCedula.setDisabledTextColor(java.awt.Color.BLACK);
 
         }
@@ -68,6 +68,15 @@ public class FormularioRegistroCliente extends javax.swing.JDialog {
         grupo.add(jRadioButtonActivo);
         grupo.add(jRadioButtonInactivo);
         jRadioButtonActivo.setSelected(true); // Activo por defecto
+
+        // Color de fondo del panel: #6699FF = RGB(102, 153, 255)
+        java.awt.Color colorPanel = new java.awt.Color(102, 153, 255);
+
+        // Aplicar el mismo color a ambos radio buttons
+        jRadioButtonActivo.setBackground(colorPanel);
+        jRadioButtonActivo.setOpaque(true);
+        jRadioButtonInactivo.setBackground(colorPanel);
+        jRadioButtonInactivo.setOpaque(true);
     }
 
     // Dentro de FormularioRegistroCliente.java

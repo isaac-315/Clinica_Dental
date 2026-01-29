@@ -229,82 +229,46 @@ public class FormularioCreacionUsuarios extends javax.swing.JDialog {
 
     private void jButtonAgregarEmpleadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarEmpleadosActionPerformed
         try {
-            // 1. Validar campos obligatorios
             String cedulaEmpleado = jTextFieldCedulaEmpleado.getText().trim();
             String usuario = jTextFieldUsuario.getText().trim();
-            String contraseña = new String(jPasswordFieldContrasena.getPassword()).trim();
+            String password = new String(jPasswordFieldContrasena.getPassword()).trim();
 
             if (cedulaEmpleado.isEmpty() || usuario.isEmpty()) {
                 JOptionPane.showMessageDialog(this,
-                        "La cédula del empleado y el nombre de usuario son obligatorios.",
-                        "Campos requeridos",
+                        "Cédula y usuario son obligatorios",
+                        "Error",
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            // La contraseña es opcional en edición
-            if (usuarioExistente == null && contraseña.isEmpty()) {
+            if (usuarioExistente == null && password.isEmpty()) {
                 JOptionPane.showMessageDialog(this,
-                        "La contraseña es obligatoria para nuevos usuarios.",
-                        "Contraseña requerida",
+                        "La contraseña es obligatoria",
+                        "Error",
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            // 2. Validar tipo de usuario
-            char tipoUsuario;
-            if (jRadioButtonEmpleadoGeneral.isSelected()) {
-                tipoUsuario = 'E';
-            } else {
-                tipoUsuario = 'A';
-            }
+            char tipoUsuario = jRadioButtonAdministrador.isSelected() ? 'A' : 'E';
 
-            // 3. Buscar el empleado por cédula
-            controladores.EmpleadoControl empleadoControl = new controladores.EmpleadoControl();
-            modelos.Empleado empleado = empleadoControl.obtenerPorCedula(cedulaEmpleado);
+            controladores.EmpleadoControl empControl = new controladores.EmpleadoControl();
+            modelos.Empleado empleado = empControl.obtenerPorCedula(cedulaEmpleado);
 
             if (empleado == null) {
                 JOptionPane.showMessageDialog(this,
-                        "No se encontró ningún empleado con cédula: " + cedulaEmpleado,
                         "Empleado no encontrado",
+                        "Error",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // 4. Verificar duplicados (solo si es nuevo usuario o cambia el nombre)
             controladores.UsuarioControl usuarioControl = new controladores.UsuarioControl();
-            if (usuarioExistente == null || !usuarioExistente.getUsuUsuario().equals(usuario)) {
-                if (usuarioControl.existeUsuario(usuario)) {
-                    JOptionPane.showMessageDialog(this,
-                            "El nombre de usuario '" + usuario + "' ya existe. Elija otro.",
-                            "Usuario duplicado",
-                            JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-            }
 
-            // 5. Crear o actualizar usuario
-            if (usuarioExistente != null) {
-                // Modo EDICIÓN
-                usuarioExistente.setUsuUsuario(usuario);
-                usuarioExistente.setUsuTipo(tipoUsuario);
-                usuarioExistente.setEmpId(empleado.getEmpId());
+            if (usuarioExistente == null) {
+                // CREAR
+                String hash = PasswordUtil.hashPassword(password);
 
-                // Solo actualizar contraseña si se proporcionó una nueva
-                if (!contraseña.isEmpty()) {
-                    String hash = PasswordUtil.hashPassword(contraseña);
-                    usuarioExistente.setUsuContrasena(hash);
-
-                }
-
-                usuarioControl.actualizar(usuarioExistente);
-                JOptionPane.showMessageDialog(this, "Usuario actualizado exitosamente.");
-
-            } else {
-                // Modo CREACIÓN
-                String hash = PasswordUtil.hashPassword(contraseña);
-
-                modelos.Usuario usuarioObj = new modelos.Usuario(
+                modelos.Usuario nuevo = new modelos.Usuario(
                         0,
                         usuario,
                         hash,
@@ -312,19 +276,31 @@ public class FormularioCreacionUsuarios extends javax.swing.JDialog {
                         empleado.getEmpId()
                 );
 
-                usuarioControl.guardar(usuarioObj);
-                JOptionPane.showMessageDialog(this, "Usuario creado exitosamente.");
-            }
-            if (ventanaUsuarios != null) {
-                ventanaUsuarios.refrescarTabla();
+                usuarioControl.guardar(nuevo);
+                JOptionPane.showMessageDialog(this, "Usuario creado correctamente");
+
+            } else {
+                // EDITAR
+                usuarioExistente.setUsuUsuario(usuario);
+                usuarioExistente.setUsuTipo(tipoUsuario);
+                usuarioExistente.setEmpId(empleado.getEmpId());
+
+                if (!password.isEmpty()) {
+                    usuarioExistente.setUsuContrasena(
+                            PasswordUtil.hashPassword(password)
+                    );
+                }
+
+                usuarioControl.actualizar(usuarioExistente);
+                JOptionPane.showMessageDialog(this, "Usuario actualizado correctamente");
             }
 
-            this.dispose();
+            ventanaUsuarios.refrescarTabla();
+            dispose();
 
         } catch (Exception e) {
-            e.printStackTrace();
             JOptionPane.showMessageDialog(this,
-                    "Error al guardar el usuario:\n" + e.getMessage(),
+                    e.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }

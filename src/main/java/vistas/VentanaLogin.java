@@ -26,6 +26,12 @@ public class VentanaLogin extends javax.swing.JFrame {
 
     }
 
+    private void limpiarCampos() {
+        jTextFieldNombreUsuario.setText("Ingrese su nombre de usuario");
+        jTextFieldNombreUsuario.setForeground(new java.awt.Color(153, 153, 153));
+        jPasswordContrasena.setText("");
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -189,6 +195,9 @@ public class VentanaLogin extends javax.swing.JFrame {
             modelos.Usuario u = dao.autenticar(usuario, hash);
 
             if (u != null) {
+                // 👇 LIMPIAR CAMPOS ANTES DE ABRIR LA VENTANA PRINCIPAL
+                limpiarCampos();
+
                 VentanaPrincipal principal = new VentanaPrincipal(this);
                 principal.setVisible(true);
                 this.setVisible(false);
