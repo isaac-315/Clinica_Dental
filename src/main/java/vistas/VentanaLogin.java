@@ -196,8 +196,9 @@ public class VentanaLogin extends javax.swing.JFrame {
 
             if (u != null) {
                 // 👇 LIMPIAR CAMPOS ANTES DE ABRIR LA VENTANA PRINCIPAL
+                controladores.SesionUsuario.iniciarSesion(u);
+                
                 limpiarCampos();
-
                 VentanaPrincipal principal = new VentanaPrincipal(this);
                 principal.setVisible(true);
                 this.setVisible(false);

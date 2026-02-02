@@ -27,6 +27,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     }
 
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -132,6 +133,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUsuariosActionPerformed
+        if (!controladores.SesionUsuario.esAdministrador()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "No tiene permisos para acceder a esta funcionalidad.",
+                    "Acceso denegado",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         VentanaUsuarios usuarios = new VentanaUsuarios(this);
         usuarios.setVisible(true);
         this.setVisible(false);
@@ -150,6 +159,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonCitasActionPerformed
 
     private void jButtonEmpleadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEmpleadosActionPerformed
+        if (!controladores.SesionUsuario.esAdministrador()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "No tiene permisos para acceder a esta funcionalidad.",
+                    "Acceso denegado",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
         VentanaEmpleados empleados = new VentanaEmpleados(this);
         empleados.setVisible(true);
         this.setVisible(false);
