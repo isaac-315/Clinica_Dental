@@ -13,11 +13,44 @@ import modelos.EmpleadoDAO;
 
 public class FormularioRegistroEmpleado extends javax.swing.JDialog {
 
+    private Empleado empleadoEdicion = null;
+    private boolean modoEdicion = false;
+
+    // Constructor para REGISTRO (nuevo)
     public FormularioRegistroEmpleado(VentanaEmpleados owner) {
-        super(owner); // Establece la ventana padre
+        super(owner);
         initComponents();
         setModal(true);
         setLocationRelativeTo(null);
+        this.modoEdicion = false;
+        this.empleadoEdicion = null;
+        jLabelFormularioClientes.setText("Registrar Nuevo Empleado");
+    }
+
+// Constructor para EDICIÓN
+    public FormularioRegistroEmpleado(VentanaEmpleados owner, Empleado empleado) {
+        super(owner);
+        initComponents();
+        setModal(true);
+        setLocationRelativeTo(null);
+        this.modoEdicion = true;
+        this.empleadoEdicion = empleado;
+        cargarDatosEmpleado(empleado);
+        jLabelFormularioClientes.setText("Editar Empleado");
+        jButtonAgregarEmpleado.setText("Actualizar");
+    }
+
+    private void cargarDatosEmpleado(Empleado emp) {
+        jTextFieldCedula.setText(emp.getEmpCedula());
+        jTextFieldNombres.setText(emp.getEmpNombre());
+        jTextFieldApellidos.setText(emp.getEmpApellido());
+        jTextFieldDireccion.setText(emp.getEmpDireccion());
+        jTextFieldTelefonoCo.setText(emp.getEmpTelefonoConvencional());
+        jTextFieldTelefonoCe.setText(emp.getEmpTelefonoCelular());
+        jTextFieldCorreo.setText(emp.getEmpCorreoElectronico());
+
+        // Si la cédula no es editable en edición, deshabilita el campo
+        jTextFieldCedula.setEditable(false);
     }
 
     // Dentro de FormularioRegistroEmpleado.java
@@ -287,26 +320,43 @@ public class FormularioRegistroEmpleado extends javax.swing.JDialog {
                 return;
             }
 
-            Empleado emp = new Empleado(
-                    jTextFieldCedula.getText().trim(),
-                    jTextFieldNombres.getText().trim(),
-                    jTextFieldApellidos.getText().trim(),
-                    jTextFieldDireccion.getText().trim(),
-                    jTextFieldTelefonoCo.getText().trim(),
-                    jTextFieldTelefonoCe.getText().trim(),
-                    jTextFieldCorreo.getText().trim()
-            );
+            if (modoEdicion) {
+                // MODO EDICIÓN: Actualizar empleado existente
+                empleadoEdicion.setEmpCedula(jTextFieldCedula.getText().trim());
+                empleadoEdicion.setEmpNombre(jTextFieldNombres.getText().trim());
+                empleadoEdicion.setEmpApellido(jTextFieldApellidos.getText().trim());
+                empleadoEdicion.setEmpDireccion(jTextFieldDireccion.getText().trim());
+                empleadoEdicion.setEmpTelefonoConvencional(jTextFieldTelefonoCo.getText().trim());
+                empleadoEdicion.setEmpTelefonoCelular(jTextFieldTelefonoCe.getText().trim());
+                empleadoEdicion.setEmpCorreoElectronico(jTextFieldCorreo.getText().trim());
 
-            EmpleadoDAO dao = new EmpleadoDAO();
-            dao.insertar(emp);
+                EmpleadoDAO dao = new EmpleadoDAO();
+                dao.actualizar(empleadoEdicion);
 
-            JOptionPane.showMessageDialog(this, "Empleado registrado exitosamente.");
+                JOptionPane.showMessageDialog(this, "Empleado actualizado exitosamente.");
 
-            // 👇 NOTIFICAR A LA VENTANA PADRE PARA QUE SE REFRESQUE
-             if (getOwner() instanceof VentanaEmpleados) {
-                ((VentanaEmpleados) getOwner()).refrescarTabla();
+            } else {
+                // MODO REGISTRO: Crear nuevo empleado
+                Empleado emp = new Empleado(
+                        jTextFieldCedula.getText().trim(),
+                        jTextFieldNombres.getText().trim(),
+                        jTextFieldApellidos.getText().trim(),
+                        jTextFieldDireccion.getText().trim(),
+                        jTextFieldTelefonoCo.getText().trim(),
+                        jTextFieldTelefonoCe.getText().trim(),
+                        jTextFieldCorreo.getText().trim()
+                );
+
+                EmpleadoDAO dao = new EmpleadoDAO();
+                dao.insertar(emp);
+
+                JOptionPane.showMessageDialog(this, "Empleado registrado exitosamente.");
             }
 
+            // Notificar a la ventana padre para refrescar
+            if (getOwner() instanceof VentanaEmpleados) {
+                ((VentanaEmpleados) getOwner()).refrescarTabla();
+            }
 
             this.dispose();
 

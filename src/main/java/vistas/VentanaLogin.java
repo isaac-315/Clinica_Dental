@@ -12,9 +12,7 @@ import javax.swing.JOptionPane;
  */
 public class VentanaLogin extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Login
-     */
+    
     public VentanaLogin() {
         initComponents();
         setLocationRelativeTo(null);

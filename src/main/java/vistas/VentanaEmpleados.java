@@ -393,8 +393,33 @@ public class VentanaEmpleados extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonEliminarEmpleadoActionPerformed
 
     private void jButtonEditarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarEmpleadoActionPerformed
-        FormularioRegistroEmpleado formulario = new FormularioRegistroEmpleado(this);
-        formulario.setVisible(true);
+        int filaSeleccionada = jTableEmpleados.getSelectedRow();
+
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un empleado de la tabla para editar.");
+            return;
+        }
+
+        try {
+            // Obtener el ID del empleado seleccionado
+            int empId = (Integer) jTableEmpleados.getValueAt(filaSeleccionada, 0);
+
+            // Cargar el empleado completo
+            EmpleadoDAO dao = new EmpleadoDAO();
+            Empleado empleado = dao.obtenerPorId(empId);
+
+            if (empleado != null) {
+                // Pasar el empleado al formulario
+                FormularioRegistroEmpleado formulario = new FormularioRegistroEmpleado(this, empleado);
+                formulario.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Empleado no encontrado.");
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar el empleado: " + e.getMessage());
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_jButtonEditarEmpleadoActionPerformed
 
     /**

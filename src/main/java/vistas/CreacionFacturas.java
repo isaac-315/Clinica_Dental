@@ -11,9 +11,18 @@ import java.sql.SQLException;
 import java.sql.Statement;  // ✅ Agregado
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import modelos.Cliente;
+import modelos.ClienteDAO;
 import modelos.ConexionDB;
+import modelos.FacturaCabecera;
+import modelos.FacturaCabeceraDAO;
+import modelos.FacturaDetalle;
+import modelos.FacturaDetalleDAO;
+import modelos.Servicio;
+import modelos.ServicioDAO;
 
 /**
  *
@@ -24,42 +33,24 @@ public class CreacionFacturas extends javax.swing.JFrame {
     private VentanaFacturacion ventanaAnterior;
     private Integer idClienteSeleccionado = null;
     private Integer idServicioSeleccionado = null;
+    private int usuId;
+    private boolean modoVista = false;
+    private String numeroFacturaParaVista = null;
 
-    /**
-     * Creates new form CreacionFacturas
-     */
+    // Constructor para modo CREACIÓN
     public CreacionFacturas(VentanaFacturacion ventanaAnterior) {
+        this(ventanaAnterior, null);
+        configurarCierre(); 
+    }
+
+// Constructor para modo VISTA
+    public CreacionFacturas(VentanaFacturacion ventanaAnterior, String numeroFactura) {
         this.ventanaAnterior = ventanaAnterior;
+        this.modoVista = (numeroFactura != null);
+        this.numeroFacturaParaVista = numeroFactura;
         initComponents();
-        setLocationRelativeTo(null);
-        setResizable(false);
-
-        // Inicializar fecha y número de factura
-        lblFechaActual.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
-        lblNumeroFactura.setText(generarNumeroFactura());
-
-        // ✅ Reemplazar el modelo generado por NetBeans
-        DefaultTableModel modeloDetalles = new DefaultTableModel(
-                new String[]{"ID Servicio", "Servicio", "Cantidad", "Precio Unitario", "Subtotal", "IVA", "Total"},
-                0
-        ) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tablaDetalles.setModel(modeloDetalles);
-
-        // 👇 CONFIGURAR CIERRE PARA VOLVER A LA VENTANA ANTERIOR
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosed(java.awt.event.WindowEvent e) {
-                if (ventanaAnterior != null) {
-                    ventanaAnterior.setVisible(true);
-                }
-            }
-        });
+        configurarModo();
+        configurarCierre();
     }
 
     private String generarNumeroFactura() {
@@ -79,6 +70,65 @@ public class CreacionFacturas extends javax.swing.JFrame {
             e.printStackTrace();
         }
         return "F0001";
+    }
+
+    private void configurarModo() {
+        setLocationRelativeTo(null);
+        setResizable(false);
+
+        if (modoVista) {
+            // Modo VISTA: título diferente y deshabilitar botones
+            jLabel7.setText("VISUALIZACIÓN DE FACTURA");
+            btnRegistrarVenta.setVisible(false);
+            btnQuitarServicio.setVisible(false);
+            btnSeleccionarCliente.setVisible(false);
+            btnAnadirServicio.setVisible(false);
+
+            // Cargar datos de la factura existente
+            cargarFacturaExistente();
+        } else {
+            // Modo CREACIÓN: comportamiento normal
+            lblFechaActual.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+            lblNumeroFactura.setText(generarNumeroFactura());
+
+            // Inicializar tabla vacía
+            DefaultTableModel modeloDetalles = new DefaultTableModel(
+                    new String[]{"ID Servicio", "Servicio", "Cantidad", "Precio Unitario", "Subtotal", "IVA", "Total"},
+                    0
+            ) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            tablaDetalles.setModel(modeloDetalles);
+        }
+
+        // Configurar cierre
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                if (ventanaAnterior != null) {
+                    ventanaAnterior.setVisible(true);
+                }
+            }
+        });
+    }
+
+    // En CreacionFacturas.java, en el constructor o en configurarModo():
+    private void configurarCierre() {
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                if (ventanaAnterior != null) {
+                    // 👇 REFRESCAR LA TABLA ANTES DE MOSTRAR LA VENTANA
+                    ventanaAnterior.refrescarTabla();
+                    ventanaAnterior.setVisible(true);
+                }
+            }
+        });
     }
 
     private void recalcularTotales() {
@@ -153,6 +203,75 @@ public class CreacionFacturas extends javax.swing.JFrame {
         return true;
     }
 
+    private void cargarFacturaExistente() {
+        try {
+            FacturaCabeceraDAO cabeceraDAO = new FacturaCabeceraDAO();
+            // Asumiendo que tu método se llama obtenerPorId y recibe String
+            FacturaCabecera factura = cabeceraDAO.obtenerPorId(numeroFacturaParaVista);
+
+            if (factura == null) {
+                JOptionPane.showMessageDialog(this, "Factura no encontrada.");
+                return;
+            }
+
+            lblNumeroFactura.setText(factura.getFacId());
+            lblFechaActual.setText(new SimpleDateFormat("dd/MM/yyyy").format(factura.getFacFechaEmision()));
+
+            ClienteDAO clienteDAO = new ClienteDAO();
+            Cliente cliente = clienteDAO.obtenerPorId(factura.getCliId());
+            if (cliente != null) {
+                lblNombreCliente.setText(cliente.getCliNombre() + " " + cliente.getCliApellido());
+            }
+
+            lblSubtotal.setText(String.format("$ %.2f", factura.getFacSubtotal()));
+            lblIva.setText(String.format("$ %.2f", factura.getFacIva()));
+            lblTotal.setText(String.format("$ %.2f", factura.getFacTotal()));
+
+            cargarDetallesFactura(factura.getFacId());
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar la factura: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void cargarDetallesFactura(String facId) {
+        try {
+            FacturaDetalleDAO detalleDAO = new FacturaDetalleDAO();
+            ServicioDAO servicioDAO = new ServicioDAO();
+
+            DefaultTableModel modelo = (DefaultTableModel) tablaDetalles.getModel();
+            modelo.setRowCount(0);
+
+            // Asumiendo que tienes un método para obtener detalles por fac_id
+            List<FacturaDetalle> detalles = detalleDAO.obtenerPorFactura(facId); // Cambiado el nombre
+
+            for (FacturaDetalle detalle : detalles) {
+                Servicio servicio = servicioDAO.obtenerPorId(detalle.getSerId());
+                String nombreServicio = (servicio != null) ? servicio.getSerNombre() : "Servicio no encontrado";
+
+                // Calcular precio unitario desde subtotal y cantidad
+                double precioUnitario = detalle.getDetCantidad() > 0
+                        ? detalle.getDetSubtotal() / detalle.getDetCantidad() : 0.0;
+
+                Object[] fila = {
+                    detalle.getSerId(),
+                    nombreServicio,
+                    detalle.getDetCantidad(),
+                    precioUnitario, // Calculado, no almacenado
+                    detalle.getDetSubtotal(),
+                    detalle.getDetIva(),
+                    detalle.getDetTotal()
+                };
+                modelo.addRow(fila);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar los detalles: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     private void registrarFactura() {
         if (!validarFactura()) {
             return;
@@ -165,18 +284,21 @@ public class CreacionFacturas extends javax.swing.JFrame {
 
             String numeroFactura = lblNumeroFactura.getText();
 
-            // Guardar encabezado
-            String sqlEncabezado = "INSERT INTO DEN_FACTURAS_CABECERAS (fac_id, fac_fecha_emision, cli_id, fac_subtotal, fac_iva, fac_total) "
-                    + "VALUES (?, SYSDATE, ?, ?, ?, ?)";
+            // 👇 OBTENER EL USU_ID DEL USUARIO ACTUAL
+            int usuId = controladores.SesionUsuario.getUsuId();
+
+            String sqlEncabezado = "INSERT INTO DEN_FACTURAS_CABECERAS (fac_id, fac_fecha_emision, cli_id, fac_subtotal, fac_iva, fac_total, usu_id) "
+                    + "VALUES (?, SYSDATE, ?, ?, ?, ?, ?)";
             PreparedStatement psEnc = conn.prepareStatement(sqlEncabezado);
             psEnc.setString(1, numeroFactura);
             psEnc.setInt(2, idClienteSeleccionado);
             psEnc.setDouble(3, obtenerSubtotal());
             psEnc.setDouble(4, obtenerIvaTotal());
             psEnc.setDouble(5, obtenerTotal());
+            psEnc.setInt(6, usuId); // 👈 Agregar el usu_id
             psEnc.executeUpdate();
 
-            // Guardar detalles
+            // Guardar detalles (sin cambios)
             String sqlDetalle = "INSERT INTO DEN_FACTURAS_DETALLES (det_id, det_cantidad, det_subtotal, det_iva, det_total, fac_id, ser_id) "
                     + "VALUES (seq_det.NEXTVAL, ?, ?, ?, ?, ?, ?)";
             PreparedStatement psDet = conn.prepareStatement(sqlDetalle);
@@ -198,8 +320,7 @@ public class CreacionFacturas extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "✅ Factura registrada correctamente\nN°: " + numeroFactura,
                     "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
-            // 👇 OCULTAR ESTA VENTANA Y VOLVER A LA ANTERIOR
-            this.dispose(); // Esto activará el windowClosed y mostrará ventanaAnterior
+            this.dispose();
 
         } catch (SQLException e) {
             if (conn != null) {
@@ -293,14 +414,12 @@ public class CreacionFacturas extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         lblFechaActual = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         lblNumeroFactura = new javax.swing.JLabel();
-        btnAnadirServicio = new javax.swing.JButton();
         btnSeleccionarCliente = new javax.swing.JButton();
         lblNombreServicio = new javax.swing.JLabel();
         lblNombreCliente = new javax.swing.JLabel();
@@ -316,10 +435,14 @@ public class CreacionFacturas extends javax.swing.JFrame {
         lblTotal = new javax.swing.JLabel();
         btnRegistrarVenta = new javax.swing.JButton();
         btnQuitarServicio = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        btnAnadirServicio = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1074, 769));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setPreferredSize(new java.awt.Dimension(1064, 689));
 
         jLabel7.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -327,9 +450,6 @@ public class CreacionFacturas extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
-        jLabel3.setText("Servicios:");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI Black", 1, 18)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -347,15 +467,6 @@ public class CreacionFacturas extends javax.swing.JFrame {
         jLabel11.setText("Clientes: ");
 
         lblNumeroFactura.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
-
-        btnAnadirServicio.setBackground(new java.awt.Color(31, 96, 178));
-        btnAnadirServicio.setForeground(new java.awt.Color(255, 255, 255));
-        btnAnadirServicio.setText("Seleccionar Servicio");
-        btnAnadirServicio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAnadirServicioActionPerformed(evt);
-            }
-        });
 
         btnSeleccionarCliente.setBackground(new java.awt.Color(31, 96, 178));
         btnSeleccionarCliente.setForeground(new java.awt.Color(255, 255, 255));
@@ -378,13 +489,8 @@ public class CreacionFacturas extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(lblNumeroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnAnadirServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
                         .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnSeleccionarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(27, 27, 27)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -409,20 +515,19 @@ public class CreacionFacturas extends javax.swing.JFrame {
                     .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblNumeroFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
-                            .addComponent(lblFechaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel11)
-                            .addComponent(btnSeleccionarCliente))
-                        .addGap(38, 38, 38)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblFechaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(15, 15, 15)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel3)
-                                .addComponent(btnAnadirServicio))
-                            .addComponent(lblNombreServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(btnSeleccionarCliente)
+                                .addComponent(jLabel11))))
                     .addComponent(lblNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(23, 23, 23)
+                .addComponent(lblNombreServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39))
         );
 
@@ -440,6 +545,7 @@ public class CreacionFacturas extends javax.swing.JFrame {
                 "ID", "Servicio", "Cantidad", "Precio Unitario", "Subtotal", "IVA", "Total"
             }
         ));
+        tablaDetalles.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(tablaDetalles);
 
         jPanel3.setBackground(new java.awt.Color(204, 255, 204));
@@ -517,6 +623,23 @@ public class CreacionFacturas extends javax.swing.JFrame {
         btnQuitarServicio.setBackground(new java.awt.Color(31, 96, 178));
         btnQuitarServicio.setForeground(new java.awt.Color(255, 255, 255));
         btnQuitarServicio.setText("Quitar Registro");
+        btnQuitarServicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQuitarServicioActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
+        jLabel3.setText("Servicios:");
+
+        btnAnadirServicio.setBackground(new java.awt.Color(31, 96, 178));
+        btnAnadirServicio.setForeground(new java.awt.Color(255, 255, 255));
+        btnAnadirServicio.setText("Seleccionar Servicio");
+        btnAnadirServicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAnadirServicioActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -526,17 +649,26 @@ public class CreacionFacturas extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnQuitarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jScrollPane2)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnAnadirServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(32, Short.MAX_VALUE)
+                .addContainerGap(18, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnAnadirServicio, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnQuitarServicio)
                 .addGap(40, 40, 40)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -548,11 +680,11 @@ public class CreacionFacturas extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(94, 94, 94)
+                .addGap(100, 100, 100)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addContainerGap(52, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -566,7 +698,7 @@ public class CreacionFacturas extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 125, Short.MAX_VALUE))
+                .addGap(0, 104, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -574,13 +706,12 @@ public class CreacionFacturas extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(28, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1070, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 769, Short.MAX_VALUE)
         );
 
         pack();
@@ -601,6 +732,39 @@ public class CreacionFacturas extends javax.swing.JFrame {
         seleccionServicio.setModal(true);
         seleccionServicio.setVisible(true);
     }//GEN-LAST:event_btnAnadirServicioActionPerformed
+
+    private void btnQuitarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitarServicioActionPerformed
+        int filaSeleccionada = tablaDetalles.getSelectedRow();
+
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Seleccione un servicio de la tabla para eliminar.",
+                    "Ninguna selección",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Confirmar eliminación
+        int confirmacion = JOptionPane.showConfirmDialog(this,
+                "¿Está seguro de eliminar este servicio de la factura?",
+                "Confirmar eliminación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            DefaultTableModel modelo = (DefaultTableModel) tablaDetalles.getModel();
+            modelo.removeRow(filaSeleccionada);
+
+            // Recalcular totales después de eliminar
+            recalcularTotales();
+
+            // Mensaje opcional de confirmación
+            JOptionPane.showMessageDialog(this,
+                    "Servicio eliminado correctamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_btnQuitarServicioActionPerformed
 
     /**
      * @param args the command line arguments

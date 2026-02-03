@@ -52,6 +52,7 @@
                           <Component id="jButtonRestablecer" alignment="1" min="-2" pref="165" max="-2" attributes="0"/>
                       </Group>
                       <Component id="jButtonCrearFacturas" min="-2" pref="165" max="-2" attributes="0"/>
+                      <Component id="jButtonVerFacturas" min="-2" pref="165" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
               </Group>
@@ -67,6 +68,8 @@
                   <Component id="jButtonBuscarFactura" min="-2" pref="34" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jButtonCrearFacturas" min="-2" pref="34" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Component id="jButtonVerFacturas" min="-2" pref="34" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -120,6 +123,14 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCrearFacturasActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonVerFacturas">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Ver factura"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonVerFacturasActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

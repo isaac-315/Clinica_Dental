@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import modelos.Cliente;
 import modelos.ClienteDAO;
 import modelos.FacturaCabecera;
@@ -26,6 +27,18 @@ public class VentanaFacturacion extends javax.swing.JFrame {
     public VentanaFacturacion(VentanaPrincipal ventanaPrincipal) {
         this.ventanaPrincipal = ventanaPrincipal;
         initComponents();
+
+        // 👇 SOBREESCRIBIR EL MODELO GENERADO POR NETBEANS
+        jTableFacturacion.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{},
+                new String[]{"ID", "Fecha de emision", "Subtotal", "IVA", "Total", "Cliente", "Usuario", "Estado"}
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
+
         configurarTabla();
         configurarAnchoColumnas();
         configurarCierre();
@@ -33,33 +46,21 @@ public class VentanaFacturacion extends javax.swing.JFrame {
         setResizable(false);
     }
 
+    // En VentanaFacturacion.java, agrega este método:
+    public void refrescarTabla() {
+        configurarTabla();
+        configurarAnchoColumnas();
+    }
+
     private void configurarTabla() {
-        String[] columnas = {
-            "ID",
-            "Fecha de emision",
-            "Subtotal",
-            "IVA",
-            "Total",
-            "Cliente",
-            "Usuario",
-            "Estado"
-        };
-
-        javax.swing.table.DefaultTableModel modelo = new javax.swing.table.DefaultTableModel(
-                null, columnas
-        ) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-
         try {
             FacturaCabeceraDAO facturaDAO = new FacturaCabeceraDAO();
             ClienteDAO clienteDAO = new ClienteDAO();
             UsuarioDAO usuarioDAO = new UsuarioDAO();
 
             List<FacturaCabecera> facturas = facturaDAO.listarTodos();
+            DefaultTableModel modelo = (DefaultTableModel) jTableFacturacion.getModel();
+            modelo.setRowCount(0); // Limpiar filas existentes
 
             // Formato de fecha (solo fecha, sin hora)
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -82,9 +83,6 @@ public class VentanaFacturacion extends javax.swing.JFrame {
                         ? sdf.format(fac.getFacFechaEmision())
                         : "Sin fecha";
 
-                // Nota: En tu modelo actual, NO hay columna "Estado" en facturas.
-                // Si no la tienes en la BD, puedes omitirla o dejar un valor fijo.
-                // Aquí asumimos que todas las facturas son "Activo" (como en tu ejemplo).
                 String estado = "Activo";
 
                 Object[] fila = {
@@ -108,8 +106,6 @@ public class VentanaFacturacion extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
-
-        jTableFacturacion.setModel(modelo);
     }
 
     private void configurarAnchoColumnas() {
@@ -152,6 +148,7 @@ public class VentanaFacturacion extends javax.swing.JFrame {
         jButtonRestablecer = new javax.swing.JButton();
         jButtonBuscarFactura = new javax.swing.JButton();
         jButtonCrearFacturas = new javax.swing.JButton();
+        jButtonVerFacturas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -193,6 +190,13 @@ public class VentanaFacturacion extends javax.swing.JFrame {
             }
         });
 
+        jButtonVerFacturas.setText("Ver factura");
+        jButtonVerFacturas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonVerFacturasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanelClientesLayout = new javax.swing.GroupLayout(jPanelClientes);
         jPanelClientes.setLayout(jPanelClientesLayout);
         jPanelClientesLayout.setHorizontalGroup(
@@ -204,7 +208,8 @@ public class VentanaFacturacion extends javax.swing.JFrame {
                     .addGroup(jPanelClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jButtonBuscarFactura, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jButtonRestablecer, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButtonCrearFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButtonCrearFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonVerFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(34, 34, 34))
         );
         jPanelClientesLayout.setVerticalGroup(
@@ -217,6 +222,8 @@ public class VentanaFacturacion extends javax.swing.JFrame {
                 .addComponent(jButtonBuscarFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButtonCrearFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButtonVerFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -242,10 +249,79 @@ public class VentanaFacturacion extends javax.swing.JFrame {
     private void jButtonBuscarFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarFacturaActionPerformed
         String criterio = javax.swing.JOptionPane.showInputDialog(
                 this,
-                "Ingrese el númer de la factura, nombre del cliente o nombre del usuario:",
+                "Ingrese el número de la factura, nombre del cliente o nombre del usuario:",
                 "Buscar Factura",
                 javax.swing.JOptionPane.QUESTION_MESSAGE
         );
+
+        // Si el usuario cancela o no ingresa nada, salir
+        if (criterio == null || criterio.trim().isEmpty()) {
+            return;
+        }
+
+        try {
+            FacturaCabeceraDAO facturaDAO = new FacturaCabeceraDAO();
+            ClienteDAO clienteDAO = new ClienteDAO();
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+            // Buscar facturas que coincidan con el criterio
+            List<FacturaCabecera> facturas = facturaDAO.buscarPorCriterio(criterio.trim());
+
+            // Configurar el modelo de la tabla
+            DefaultTableModel modelo = (DefaultTableModel) jTableFacturacion.getModel();
+            modelo.setRowCount(0); // Limpiar tabla
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+            for (FacturaCabecera fac : facturas) {
+                // Obtener cliente
+                Cliente cliente = clienteDAO.obtenerPorId(fac.getCliId());
+                String nombreCliente = (cliente != null)
+                        ? cliente.getCliNombre() + " " + cliente.getCliApellido()
+                        : "Cliente no encontrado";
+
+                // Obtener usuario
+                Usuario usuario = usuarioDAO.obtenerPorId(fac.getUsuId());
+                String nombreUsuario = (usuario != null)
+                        ? usuario.getUsuUsuario()
+                        : "Usuario no encontrado";
+
+                // Formatear fecha
+                String fecha = (fac.getFacFechaEmision() != null)
+                        ? sdf.format(fac.getFacFechaEmision())
+                        : "Sin fecha";
+
+                String estado = "Activo";
+
+                Object[] fila = {
+                    fac.getFacId(),
+                    fecha,
+                    String.format("%.2f", fac.getFacSubtotal()),
+                    String.format("%.2f", fac.getFacIva()),
+                    String.format("%.2f", fac.getFacTotal()),
+                    nombreCliente,
+                    nombreUsuario,
+                    estado
+                };
+
+                modelo.addRow(fila);
+            }
+
+            // Mensaje si no se encontraron resultados
+            if (facturas.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "No se encontraron facturas con el criterio: \"" + criterio + "\"",
+                        "Búsqueda sin resultados",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al buscar facturas: " + e.getMessage(),
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_jButtonBuscarFacturaActionPerformed
 
     private void jButtonCrearFacturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCrearFacturasActionPerformed
@@ -253,6 +329,37 @@ public class VentanaFacturacion extends javax.swing.JFrame {
         creacion.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jButtonCrearFacturasActionPerformed
+
+    private void jButtonVerFacturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVerFacturasActionPerformed
+        int filaSeleccionada = jTableFacturacion.getSelectedRow();
+
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Seleccione una factura de la tabla para visualizar.",
+                    "Ninguna selección",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            Object idObj = jTableFacturacion.getValueAt(filaSeleccionada, 0);
+            if (idObj == null) {
+                JOptionPane.showMessageDialog(this, "Factura seleccionada no válida.");
+                return;
+            }
+
+            String facId = idObj.toString();
+
+            // 👇 ABRIR EN MODO VISTA
+            CreacionFacturas visualizacion = new CreacionFacturas(this, facId);
+            visualizacion.setVisible(true);
+            this.setVisible(false);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al abrir la factura: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_jButtonVerFacturasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -262,6 +369,7 @@ public class VentanaFacturacion extends javax.swing.JFrame {
     private javax.swing.JButton jButtonBuscarFactura;
     private javax.swing.JButton jButtonCrearFacturas;
     private javax.swing.JButton jButtonRestablecer;
+    private javax.swing.JButton jButtonVerFacturas;
     private javax.swing.JPanel jPanelClientes;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableFacturacion;

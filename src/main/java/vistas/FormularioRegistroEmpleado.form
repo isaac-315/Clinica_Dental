@@ -90,25 +90,18 @@
                   </Group>
                   <EmptySpace pref="147" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jTextFieldCedula" min="-2" pref="165" max="-2" attributes="0"/>
-                              <Component id="jTextFieldNombres" min="-2" pref="165" max="-2" attributes="0"/>
-                              <Component id="jTextFieldApellidos" min="-2" pref="165" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="jTextFieldDireccion" pref="165" max="32767" attributes="0"/>
-                              <Component id="jButtonAgregarEmpleado" pref="165" max="32767" attributes="0"/>
-                              <Component id="jTextFieldTelefonoCo" pref="165" max="32767" attributes="0"/>
-                              <Component id="jTextFieldTelefonoCe" pref="165" max="32767" attributes="0"/>
-                              <Component id="jTextFieldCorreo" pref="165" max="32767" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="-2" pref="94" max="-2" attributes="0"/>
+                      <Component id="jTextFieldCedula" min="-2" pref="165" max="-2" attributes="0"/>
+                      <Component id="jTextFieldNombres" min="-2" pref="165" max="-2" attributes="0"/>
+                      <Component id="jTextFieldApellidos" min="-2" pref="165" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="jTextFieldDireccion" pref="165" max="32767" attributes="0"/>
+                          <Component id="jButtonAgregarEmpleado" pref="165" max="32767" attributes="0"/>
+                          <Component id="jTextFieldTelefonoCo" pref="165" max="32767" attributes="0"/>
+                          <Component id="jTextFieldTelefonoCe" pref="165" max="32767" attributes="0"/>
+                          <Component id="jTextFieldCorreo" pref="165" max="32767" attributes="0"/>
                       </Group>
                   </Group>
+                  <EmptySpace min="-2" pref="94" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
