@@ -98,4 +98,15 @@ public class ServicioDAO {
             stmt.executeUpdate();
         }
     }
+
+    public List<Servicio> listarTodosActivos() throws SQLException {
+        List<Servicio> lista = new ArrayList<>();
+        String sql = "SELECT * FROM DEN_SERVICIOS WHERE ser_estado = 'A' ORDER BY ser_id";
+        try (Connection conn = ConexionDB.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                lista.add(mapearResultSet(rs));
+            }
+        }
+        return lista;
+    }
 }
