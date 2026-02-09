@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import modelos.Cita;
+import modelos.CitaDAO;
 import modelos.Cliente;
 import modelos.Empleado;
 
@@ -23,6 +24,7 @@ public class FormularioAgendacionCitas extends javax.swing.JDialog {
 
     private VentanaPrincipal ventanaAnterior;
     private Cita citaExistente = null;
+    private javax.swing.ButtonGroup buttonGroupEstado;
 
     // ✅ Constructor por defecto que usa un propietario nulo (funciona, pero mejor con owner)
     // Constructor para crear nueva cita
@@ -35,49 +37,49 @@ public class FormularioAgendacionCitas extends javax.swing.JDialog {
     }
 
 // Constructor para editar cita existente
-public FormularioAgendacionCitas(VentanaCitas owner, Cita cita) {
-    this(owner); // Llama al constructor anterior (que ya selecciona "Pendiente")
-    this.citaExistente = cita;
-    
-    if (cita != null) {
-        try {
-            // Fecha
-            jDateChooserCitas.setDate(new Date(cita.getCitaFechaHora().getTime()));
-            
-            // Hora
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(new Date(cita.getCitaFechaHora().getTime()));
-            jSpinnerHora.setValue(cal.getTime());
-            
-            // Estado
-            if (cita.getCitaEstado() == 'C') {
-                jRadioButtonCancelado.setSelected(true);
+    public FormularioAgendacionCitas(VentanaCitas owner, Cita cita) {
+        this(owner); // Llama al constructor anterior (que ya selecciona "Pendiente")
+        this.citaExistente = cita;
+
+        if (cita != null) {
+            try {
+                // Fecha
+                jDateChooserCitas.setDate(new Date(cita.getCitaFechaHora().getTime()));
+
+                // Hora
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(new Date(cita.getCitaFechaHora().getTime()));
+                jSpinnerHora.setValue(cal.getTime());
+
+                // Estado
+                if (cita.getCitaEstado() == 'C') {
+                    jRadioButtonCancelado.setSelected(true);
+                }
+                // Si es 'P', ya está seleccionado por postInit()
+
+                // Cédulas (buscar los objetos completos)
+                ClienteControl cliCtrl = new ClienteControl();
+                EmpleadoControl empCtrl = new EmpleadoControl();
+
+                Cliente cliente = cliCtrl.obtenerPorId(cita.getCliId());
+                Empleado empleado = empCtrl.obtenerPorId(cita.getEmpId());
+
+                if (cliente != null) {
+                    jTextFieldCedulaCliente.setText(cliente.getCliCedula());
+                }
+                if (empleado != null) {
+                    jTextFieldCedulaEmpleado.setText(empleado.getEmpCedula());
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error al cargar los datos de la cita:\n" + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
-            // Si es 'P', ya está seleccionado por postInit()
-            
-            // Cédulas (buscar los objetos completos)
-            ClienteControl cliCtrl = new ClienteControl();
-            EmpleadoControl empCtrl = new EmpleadoControl();
-            
-            Cliente cliente = cliCtrl.obtenerPorId(cita.getCliId());
-            Empleado empleado = empCtrl.obtenerPorId(cita.getEmpId());
-            
-            if (cliente != null) {
-                jTextFieldCedulaCliente.setText(cliente.getCliCedula());
-            }
-            if (empleado != null) {
-                jTextFieldCedulaEmpleado.setText(empleado.getEmpCedula());
-            }
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this,
-                "Error al cargar los datos de la cita:\n" + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
         }
     }
-}
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -221,29 +223,6 @@ public FormularioAgendacionCitas(VentanaCitas owner, Cita cita) {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void postInit() {
-        // Configurar el spinner de hora
-        SpinnerDateModel horaModel = new SpinnerDateModel();
-        horaModel.setCalendarField(Calendar.MINUTE);
-        jSpinnerHora.setModel(horaModel);
-        JSpinner.DateEditor editor = new JSpinner.DateEditor(jSpinnerHora, "HH:mm");
-        jSpinnerHora.setEditor(editor);
-
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 8);
-        cal.set(Calendar.MINUTE, 0);
-        jSpinnerHora.setValue(cal.getTime());
-
-        // ✅ Fondo de los radio buttons
-        java.awt.Color colorPanel = new java.awt.Color(102, 153, 255);
-        jRadioButtonPendiente.setBackground(colorPanel);
-        jRadioButtonPendiente.setOpaque(true);
-        jRadioButtonCancelado.setBackground(colorPanel);
-        jRadioButtonCancelado.setOpaque(true);
-
-        // ✅ Seleccionar "Pendiente" por defecto
-        jRadioButtonPendiente.setSelected(true);
-    }
     private void jButtonAgendarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgendarCitaActionPerformed
         try {
             // 1. Validar fecha
@@ -278,7 +257,7 @@ public FormularioAgendacionCitas(VentanaCitas owner, Cita cita) {
                 return;
             }
 
-            // 2. Validar hora (CORREGIDO)
+            // 2. Validar hora
             Object valorHora = jSpinnerHora.getValue();
             if (valorHora == null) {
                 JOptionPane.showMessageDialog(this,
@@ -317,6 +296,7 @@ public FormularioAgendacionCitas(VentanaCitas owner, Cita cita) {
             citaCompleta.set(Calendar.MILLISECOND, 0);
 
             Date fechaHoraCita = citaCompleta.getTime();
+            java.sql.Timestamp timestampCita = new java.sql.Timestamp(fechaHoraCita.getTime());
 
             // 4. Obtener cédulas
             String cedulaCliente = jTextFieldCedulaCliente.getText().trim();
@@ -330,21 +310,7 @@ public FormularioAgendacionCitas(VentanaCitas owner, Cita cita) {
                 return;
             }
 
-            // 5. Obtener estado
-            char estado;
-            if (jRadioButtonPendiente.isSelected()) {
-                estado = 'P';
-            } else if (jRadioButtonCancelado.isSelected()) {
-                estado = 'C';
-            } else {
-                JOptionPane.showMessageDialog(this,
-                        "Seleccione un estado para la cita (Pendiente o Cancelada).",
-                        "Estado requerido",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            // 6. Buscar IDs por cédula
+            // 5. Buscar IDs por cédula
             ClienteControl clienteControl = new ClienteControl();
             EmpleadoControl empleadoControl = new EmpleadoControl();
 
@@ -366,12 +332,39 @@ public FormularioAgendacionCitas(VentanaCitas owner, Cita cita) {
                 return;
             }
 
+            // 👇 VALIDACIÓN NUEVA: Verificar conflicto de horario
+            CitaDAO citaDAO = new CitaDAO();
+            Integer citaIdExcluir = (citaExistente != null) ? citaExistente.getCitaId() : null;
+
+            if (citaDAO.existeCitaMismaFechaHora(empleado.getEmpId(), timestampCita, citaIdExcluir)) {
+                JOptionPane.showMessageDialog(this,
+                        "El empleado ya tiene una cita programada para esta misma fecha y hora.\n"
+                        + "Por favor, seleccione otro horario o empleado.",
+                        "Conflicto de horario",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // 6. Obtener estado
+            char estado;
+            if (jRadioButtonPendiente.isSelected()) {
+                estado = 'P';
+            } else if (jRadioButtonCancelado.isSelected()) {
+                estado = 'C';
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Seleccione un estado para la cita (Pendiente o Cancelada).",
+                        "Estado requerido",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             // 7. Crear o actualizar cita
             CitaControl citaControl = new CitaControl();
 
             if (citaExistente != null) {
                 // Modo EDICIÓN: actualizar cita existente
-                citaExistente.setCitaFechaHora(new java.sql.Timestamp(fechaHoraCita.getTime()));
+                citaExistente.setCitaFechaHora(timestampCita);
                 citaExistente.setCitaEstado(estado);
                 citaExistente.setCliId(cliente.getCliId());
                 citaExistente.setEmpId(empleado.getEmpId());
@@ -381,7 +374,7 @@ public FormularioAgendacionCitas(VentanaCitas owner, Cita cita) {
                 // Modo CREACIÓN: guardar nueva cita
                 Cita cita = new Cita(
                         0,
-                        new java.sql.Timestamp(fechaHoraCita.getTime()),
+                        timestampCita,
                         estado,
                         cliente.getCliId(),
                         empleado.getEmpId()
@@ -409,6 +402,34 @@ public FormularioAgendacionCitas(VentanaCitas owner, Cita cita) {
         }
     }//GEN-LAST:event_jButtonAgendarCitaActionPerformed
 
+    private void postInit() {
+        // Configurar el spinner de hora
+        SpinnerDateModel horaModel = new SpinnerDateModel();
+        horaModel.setCalendarField(Calendar.MINUTE);
+        jSpinnerHora.setModel(horaModel);
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(jSpinnerHora, "HH:mm");
+        jSpinnerHora.setEditor(editor);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 8);
+        cal.set(Calendar.MINUTE, 0);
+        jSpinnerHora.setValue(cal.getTime());
+
+        // 👇 CREAR EL BUTTON GROUP (igual que en FormularioCreacionUsuarios)
+        buttonGroupEstado = new javax.swing.ButtonGroup();
+        buttonGroupEstado.add(jRadioButtonPendiente);
+        buttonGroupEstado.add(jRadioButtonCancelado);
+
+        // ✅ Fondo de los radio buttons
+        java.awt.Color colorPanel = new java.awt.Color(102, 153, 255);
+        jRadioButtonPendiente.setBackground(colorPanel);
+        jRadioButtonPendiente.setOpaque(true);
+        jRadioButtonCancelado.setBackground(colorPanel);
+        jRadioButtonCancelado.setOpaque(true);
+
+        // ✅ Seleccionar "Pendiente" por defecto
+        jRadioButtonPendiente.setSelected(true);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAgendarCita;

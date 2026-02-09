@@ -15,15 +15,14 @@ public class CitaDAO {
                 emp_id
             ) VALUES (?, ?, ?, ?)
             """;
-        
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
+        try (Connection conn = ConexionDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setTimestamp(1, cita.getCitaFechaHora());
             stmt.setString(2, String.valueOf(cita.getCitaEstado()));
             stmt.setInt(3, cita.getCliId());
             stmt.setInt(4, cita.getEmpId());
-            
+
             stmt.executeUpdate();
         }
     }
@@ -38,24 +37,22 @@ public class CitaDAO {
                 emp_id = ?
             WHERE cita_id = ?
             """;
-        
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
+        try (Connection conn = ConexionDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setTimestamp(1, cita.getCitaFechaHora());
             stmt.setString(2, String.valueOf(cita.getCitaEstado()));
             stmt.setInt(3, cita.getCliId());
             stmt.setInt(4, cita.getEmpId());
             stmt.setInt(5, cita.getCitaId());
-            
+
             stmt.executeUpdate();
         }
     }
 
     public void eliminar(int citaId) throws SQLException {
         String sql = "DELETE FROM DEN_CITAS WHERE cita_id = ?";
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, citaId);
             stmt.executeUpdate();
         }
@@ -63,8 +60,7 @@ public class CitaDAO {
 
     public Cita obtenerPorId(int citaId) throws SQLException {
         String sql = "SELECT * FROM DEN_CITAS WHERE cita_id = ?";
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, citaId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -79,9 +75,7 @@ public class CitaDAO {
     public List<Cita> listarTodos() throws SQLException {
         List<Cita> lista = new ArrayList<>();
         String sql = "SELECT * FROM DEN_CITAS ORDER BY cita_fecha_hora";
-        try (Connection conn = ConexionDB.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        try (Connection conn = ConexionDB.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 lista.add(mapearResultSet(rs));
             }
@@ -91,11 +85,54 @@ public class CitaDAO {
 
     private Cita mapearResultSet(ResultSet rs) throws SQLException {
         return new Cita(
-            rs.getInt("CITA_ID"),
-            rs.getTimestamp("CITA_FECHA_HORA"),
-            rs.getString("CITA_ESTADO").charAt(0),
-            rs.getInt("CLI_ID"),
-            rs.getInt("EMP_ID")
+                rs.getInt("CITA_ID"),
+                rs.getTimestamp("CITA_FECHA_HORA"),
+                rs.getString("CITA_ESTADO").charAt(0),
+                rs.getInt("CLI_ID"),
+                rs.getInt("EMP_ID")
         );
+    }
+
+    // En CitaDAO.java
+    public boolean tieneCitasNoCanceladas(int empId) throws SQLException {
+        // Verifica si existen citas con estado diferente a 'C' (Cancelada)
+        String sql = "SELECT COUNT(*) FROM DEN_CITAS WHERE emp_id = ? AND cita_estado != 'C'";
+
+        try (Connection conn = ConexionDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, empId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // true si hay citas no canceladas
+            }
+        }
+        return false;
+    }
+
+    // En CitaDAO.java
+    public boolean existeCitaMismaFechaHora(int empId, Timestamp fechaHoraCita, Integer citaIdExcluir) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT COUNT(*) FROM DEN_CITAS WHERE emp_id = ? AND cita_fecha_hora = ?");
+
+        // Si es edición, excluimos la cita actual
+        if (citaIdExcluir != null) {
+            sql.append(" AND cita_id != ?");
+        }
+
+        try (Connection conn = ConexionDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            stmt.setInt(1, empId);
+            stmt.setTimestamp(2, fechaHoraCita);
+
+            if (citaIdExcluir != null) {
+                stmt.setInt(3, citaIdExcluir);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+        return false;
     }
 }

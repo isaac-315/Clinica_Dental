@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import modelos.CitaDAO;
 import modelos.Empleado;
 import modelos.EmpleadoDAO;
 import modelos.Usuario;
@@ -329,6 +330,7 @@ public class VentanaEmpleados extends javax.swing.JFrame {
                         "Sin resultados",
                         JOptionPane.INFORMATION_MESSAGE);
                 cargarDatosEnTabla(); // Volver a mostrar todos
+                configurarAnchoColumnas();
             } else {
                 mostrarResultadosBusqueda(resultados); // Mostrar solo resultados
             }
@@ -362,21 +364,33 @@ public class VentanaEmpleados extends javax.swing.JFrame {
         int empId = (int) jTableEmpleados.getValueAt(filaSeleccionada, 0);
         String cedula = (String) jTableEmpleados.getValueAt(filaSeleccionada, 1);
 
-        int confirmacion = JOptionPane.showConfirmDialog(this,
-                "¿Está seguro de eliminar al empleado con cédula " + cedula + "?",
-                "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-
-        if (confirmacion != JOptionPane.YES_OPTION) {
-            return;
-        }
-
         try {
+            // 👇 VERIFICAR SI EL EMPLEADO TIENE CITAS NO CANCELADAS
+            CitaDAO citaDAO = new CitaDAO();
+            if (citaDAO.tieneCitasNoCanceladas(empId)) {
+                JOptionPane.showMessageDialog(this,
+                        "No se puede eliminar el empleado con cédula " + cedula
+                        + " porque tiene citas médicas activas o pendientes.\n"
+                        + "Solo se pueden eliminar empleados cuyas citas están todas canceladas.",
+                        "Empleado con citas activas",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            int confirmacion = JOptionPane.showConfirmDialog(this,
+                    "¿Está seguro de eliminar al empleado con cédula " + cedula + "?",
+                    "Confirmar eliminación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+
+            if (confirmacion != JOptionPane.YES_OPTION) {
+                return;
+            }
+
             EmpleadoDAO empleadoDAO = new EmpleadoDAO();
             empleadoDAO.eliminar(empId);
 
-            refrescarTabla(); // Actualiza la tabla
+            refrescarTabla();
 
             JOptionPane.showMessageDialog(this,
                     "Empleado eliminado exitosamente.",
@@ -384,11 +398,19 @@ public class VentanaEmpleados extends javax.swing.JFrame {
                     JOptionPane.INFORMATION_MESSAGE);
 
         } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this,
-                    "Error al eliminar el empleado:\n" + e.getMessage(),
-                    "Error de base de datos",
-                    JOptionPane.ERROR_MESSAGE);
+            // Manejo de errores
+            if (e.getErrorCode() == 2292) {
+                JOptionPane.showMessageDialog(this,
+                        "Error de integridad referencial. El empleado tiene citas asociadas.",
+                        "Error al eliminar",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error al eliminar el empleado:\n" + e.getMessage(),
+                        "Error de base de datos",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_jButtonEliminarEmpleadoActionPerformed
 
