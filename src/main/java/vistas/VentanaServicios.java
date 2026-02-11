@@ -4,9 +4,12 @@
  */
 package vistas;
 
+import controladores.ServicioControl;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import modelos.Servicio;
 import modelos.ServicioDAO;
 
@@ -78,6 +81,39 @@ public class VentanaServicios extends javax.swing.JFrame {
             e.printStackTrace();
         }
 
+        jTableServicios.setModel(modelo);
+    }
+
+    private void actualizarTablaConServicios(List<Servicio> servicios) {
+        // Definir columnas
+        String[] columnas = {
+            "ID", "Nombre", "Precio", "IVA", "Estado"
+        };
+
+        // Crear modelo de tabla
+        DefaultTableModel modelo = new DefaultTableModel(null, columnas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        // Llenar la tabla con los servicios
+        for (Servicio s : servicios) {
+            String ivaStr = (s.getSerIva() == 'S') ? "Sí" : "No";
+            String estadoStr = (s.getSerEstado() == 'A') ? "Activo" : "Inactivo";
+
+            Object[] fila = {
+                s.getSerId(),
+                s.getSerNombre(),
+                String.format("$ %.2f", s.getSerPrecio()),
+                ivaStr,
+                estadoStr
+            };
+            modelo.addRow(fila);
+        }
+
+        // Asignar el modelo a la tabla
         jTableServicios.setModel(modelo);
     }
 
@@ -219,7 +255,57 @@ public class VentanaServicios extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonRestablecerActionPerformed
 
     private void jButtonBuscarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarServicioActionPerformed
-        // TODO add your handling code here:
+        String criterio = JOptionPane.showInputDialog(
+                this,
+                "Ingrese el nombre o ID del servicio a buscar:",
+                "Buscar Servicio",
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (criterio == null || criterio.trim().isEmpty()) {
+            return; // Canceló o dejó vacío
+        }
+
+        try {
+            // Cargar todos los servicios una sola vez
+            ServicioControl servicioControl = new ServicioControl();
+            List<Servicio> todosServicios = servicioControl.listarTodos();
+            List<Servicio> coincidencias = new ArrayList<>();
+
+            String busqueda = criterio.trim().toLowerCase();
+
+            for (Servicio s : todosServicios) {
+                // Buscar por nombre
+                if (s.getSerNombre().toLowerCase().contains(busqueda)) {
+                    coincidencias.add(s);
+                } // Buscar por ID (si es numérico)
+                else if (busqueda.matches("\\d+")) {
+                    int idBuscado = Integer.parseInt(busqueda);
+                    if (s.getSerId() == idBuscado) {
+                        coincidencias.add(s);
+                    }
+                }
+            }
+
+            if (coincidencias.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "No se encontraron servicios con el criterio: \"" + criterio.trim() + "\"",
+                        "Sin resultados",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+            } else {
+                // Actualizar la tabla SOLO con los resultados
+                actualizarTablaConServicios(coincidencias);
+
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al buscar servicios:\n" + e.getMessage(),
+                    "Error de base de datos",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_jButtonBuscarServicioActionPerformed
 
     private void jButtonIngresarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIngresarServicioActionPerformed

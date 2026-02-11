@@ -300,9 +300,11 @@ public class VentanaClientes extends javax.swing.JFrame {
                         "No se encontraron clientes con el criterio: \"" + criterio.trim() + "\"",
                         "Sin resultados",
                         JOptionPane.INFORMATION_MESSAGE);
+                configurarAnchoColumnas();
             } else {
                 // Actualizar la tabla SOLO con los resultados
                 actualizarTablaConClientes(coincidencias);
+                configurarAnchoColumnas();
             }
 
         } catch (SQLException e) {

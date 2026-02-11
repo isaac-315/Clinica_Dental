@@ -267,52 +267,60 @@ public class VentanaFacturacion extends javax.swing.JFrame {
             // Buscar facturas que coincidan con el criterio
             List<FacturaCabecera> facturas = facturaDAO.buscarPorCriterio(criterio.trim());
 
-            // Configurar el modelo de la tabla
-            DefaultTableModel modelo = (DefaultTableModel) jTableFacturacion.getModel();
-            modelo.setRowCount(0); // Limpiar tabla
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-            for (FacturaCabecera fac : facturas) {
-                // Obtener cliente
-                Cliente cliente = clienteDAO.obtenerPorId(fac.getCliId());
-                String nombreCliente = (cliente != null)
-                        ? cliente.getCliNombre() + " " + cliente.getCliApellido()
-                        : "Cliente no encontrado";
-
-                // Obtener usuario
-                Usuario usuario = usuarioDAO.obtenerPorId(fac.getUsuId());
-                String nombreUsuario = (usuario != null)
-                        ? usuario.getUsuUsuario()
-                        : "Usuario no encontrado";
-
-                // Formatear fecha
-                String fecha = (fac.getFacFechaEmision() != null)
-                        ? sdf.format(fac.getFacFechaEmision())
-                        : "Sin fecha";
-
-                String estado = "Activo";
-
-                Object[] fila = {
-                    fac.getFacId(),
-                    fecha,
-                    String.format("%.2f", fac.getFacSubtotal()),
-                    String.format("%.2f", fac.getFacIva()),
-                    String.format("%.2f", fac.getFacTotal()),
-                    nombreCliente,
-                    nombreUsuario,
-                    estado
-                };
-
-                modelo.addRow(fila);
-            }
-
-            // Mensaje si no se encontraron resultados
             if (facturas.isEmpty()) {
+                // 👇 NO HAY RESULTADOS: Restaurar la tabla completa
                 JOptionPane.showMessageDialog(this,
                         "No se encontraron facturas con el criterio: \"" + criterio + "\"",
                         "Búsqueda sin resultados",
                         JOptionPane.INFORMATION_MESSAGE);
+
+                // Recargar TODAS las facturas (comportamiento original)
+                configurarTabla();
+                configurarAnchoColumnas();
+
+            } else {
+                // 👇 SÍ HAY RESULTADOS: Mostrar solo los resultados
+                DefaultTableModel modelo = (DefaultTableModel) jTableFacturacion.getModel();
+                modelo.setRowCount(0); // Limpiar tabla
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+                for (FacturaCabecera fac : facturas) {
+                    // Obtener cliente
+                    Cliente cliente = clienteDAO.obtenerPorId(fac.getCliId());
+                    String nombreCliente = (cliente != null)
+                            ? cliente.getCliNombre() + " " + cliente.getCliApellido()
+                            : "Cliente no encontrado";
+
+                    // Obtener usuario
+                    Usuario usuario = usuarioDAO.obtenerPorId(fac.getUsuId());
+                    String nombreUsuario = (usuario != null)
+                            ? usuario.getUsuUsuario()
+                            : "Usuario no encontrado";
+
+                    // Formatear fecha
+                    String fecha = (fac.getFacFechaEmision() != null)
+                            ? sdf.format(fac.getFacFechaEmision())
+                            : "Sin fecha";
+
+                    String estado = "Activo";
+
+                    Object[] fila = {
+                        fac.getFacId(),
+                        fecha,
+                        String.format("%.2f", fac.getFacSubtotal()),
+                        String.format("%.2f", fac.getFacIva()),
+                        String.format("%.2f", fac.getFacTotal()),
+                        nombreCliente,
+                        nombreUsuario,
+                        estado
+                    };
+
+                    modelo.addRow(fila);
+                }
+
+                // Configurar anchos de columna para los resultados
+                configurarAnchoColumnas();
             }
 
         } catch (SQLException e) {

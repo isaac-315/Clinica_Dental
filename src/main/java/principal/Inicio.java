@@ -8,7 +8,7 @@ public class Inicio {
 
         javax.swing.SwingUtilities.invokeLater(() -> {
             VentanaLogin login = new VentanaLogin();
-            login.setLocationRelativeTo(null); // centrar ventana
+            login.setLocationRelativeTo(null); 
             login.setVisible(true);
             
         });

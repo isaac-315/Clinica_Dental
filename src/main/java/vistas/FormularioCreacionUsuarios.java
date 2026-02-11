@@ -51,6 +51,32 @@ public class FormularioCreacionUsuarios extends javax.swing.JDialog {
         }
     }
 
+    // En FormularioCreacionUsuarios.java, agrega este método:
+    private void buscarYMostrarEmpleado() {
+        String cedula = jTextFieldCedulaEmpleado.getText().trim();
+
+        if (cedula.isEmpty()) {
+            jTextFieldMostrarEmpleado.setText("");
+            return;
+        }
+
+        try {
+            controladores.EmpleadoControl empControl = new controladores.EmpleadoControl();
+            modelos.Empleado empleado = empControl.obtenerPorCedula(cedula);
+
+            if (empleado != null) {
+                // Mostrar nombre completo del empleado
+                jTextFieldMostrarEmpleado.setText(empleado.getEmpNombre() + " " + empleado.getEmpApellido());
+            } else {
+                jTextFieldMostrarEmpleado.setText("Empleado no encontrado");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            jTextFieldMostrarEmpleado.setText("Error al buscar empleado");
+        }
+    }
+
 // Método auxiliar para obtener la cédula del empleado
     private String obtenerCedulaEmpleado(int empId) {
         try {
@@ -102,6 +128,7 @@ public class FormularioCreacionUsuarios extends javax.swing.JDialog {
         jRadioButtonEmpleadoGeneral = new javax.swing.JRadioButton();
         jRadioButtonAdministrador = new javax.swing.JRadioButton();
         jPasswordFieldContrasena = new javax.swing.JPasswordField();
+        jTextFieldMostrarEmpleado = new javax.swing.JTextField();
 
         jTextField4.setText("jTextField1");
 
@@ -140,6 +167,12 @@ public class FormularioCreacionUsuarios extends javax.swing.JDialog {
         jLabel18.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jLabel18.setText("Empleado ");
 
+        jTextFieldCedulaEmpleado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextFieldCedulaEmpleadoKeyReleased(evt);
+            }
+        });
+
         jLabel7.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         jLabel7.setText("Tipo de usuario");
 
@@ -152,6 +185,19 @@ public class FormularioCreacionUsuarios extends javax.swing.JDialog {
             }
         });
 
+        jTextFieldMostrarEmpleado.setEditable(false);
+        jTextFieldMostrarEmpleado.setBackground(new java.awt.Color(255, 255, 255));
+        jTextFieldMostrarEmpleado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldMostrarEmpleadoActionPerformed(evt);
+            }
+        });
+        jTextFieldMostrarEmpleado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextFieldMostrarEmpleadoKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -161,11 +207,14 @@ public class FormularioCreacionUsuarios extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(47, 47, 47)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(149, 149, 149)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextFieldMostrarEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextFieldCedulaEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButtonAgregarEmpleados, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -189,7 +238,8 @@ public class FormularioCreacionUsuarios extends javax.swing.JDialog {
                 .addGap(46, 46, 46)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldCedulaEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldCedulaEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldMostrarEmpleado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -310,6 +360,38 @@ public class FormularioCreacionUsuarios extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jRadioButtonAdministradorActionPerformed
 
+    private void jTextFieldMostrarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldMostrarEmpleadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldMostrarEmpleadoActionPerformed
+
+    private void jTextFieldMostrarEmpleadoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldMostrarEmpleadoKeyReleased
+
+    }//GEN-LAST:event_jTextFieldMostrarEmpleadoKeyReleased
+
+    private void jTextFieldCedulaEmpleadoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldCedulaEmpleadoKeyReleased
+        String cedula = jTextFieldCedulaEmpleado.getText().trim();
+
+        if (cedula.isEmpty()) {
+            jTextFieldMostrarEmpleado.setText("");
+            return;
+        }
+
+        try {
+            controladores.EmpleadoControl empControl = new controladores.EmpleadoControl();
+            modelos.Empleado empleado = empControl.obtenerPorCedula(cedula);
+
+            if (empleado != null) {
+                jTextFieldMostrarEmpleado.setText(empleado.getEmpNombre() + " " + empleado.getEmpApellido());
+            } else {
+                jTextFieldMostrarEmpleado.setText("Empleado no encontrado");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            jTextFieldMostrarEmpleado.setText("Error al buscar");
+        }
+    }//GEN-LAST:event_jTextFieldCedulaEmpleadoKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAgregarEmpleados;
@@ -326,6 +408,7 @@ public class FormularioCreacionUsuarios extends javax.swing.JDialog {
     private javax.swing.JRadioButton jRadioButtonEmpleadoGeneral;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextFieldCedulaEmpleado;
+    private javax.swing.JTextField jTextFieldMostrarEmpleado;
     private javax.swing.JTextField jTextFieldUsuario;
     // End of variables declaration//GEN-END:variables
 }

@@ -366,9 +366,11 @@ public class VentanaCitas extends javax.swing.JFrame {
                         JOptionPane.INFORMATION_MESSAGE);
                 // Volver a mostrar todas las citas
                 configurarTabla();
+                configurarAnchoColumnas();
             } else {
                 // Mostrar SOLO los resultados de la búsqueda
                 mostrarCitasEnTabla(resultados);
+                configurarAnchoColumnas();
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this,
